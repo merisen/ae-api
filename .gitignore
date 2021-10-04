@@ -32,3 +32,9 @@ hs_err_pid*
 /target
 /src/main/mule/global.xml
 /src/main/resources/config.yaml
+src/main/.DS_Store
+src/main/resources/api/dump/.DS_Store
+src/main/resources/.DS_Store
+
+# MacOS Files
+*.DS_Store
