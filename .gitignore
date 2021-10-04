@@ -21,3 +21,14 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# MuleSoft cash files
+.mule/
+.settings/
+.classpath
+.project
+
+# MuleSoft files
+/target
+/src/main/mule/global.xml
+/src/main/resources/config.yaml
