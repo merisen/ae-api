@@ -38,7 +38,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 output application/json
 ---
 {
-	Status: "Success!"
+	Status: Mule::p('success.create-custom-collection-message')
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
@@ -64,7 +64,7 @@ output application/json
 output application/json
 ---
 {
-	Status: "Success!"
+	Status: Mule::p('success.delete-astronauts-database-message')
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
@@ -80,7 +80,7 @@ output application/json
 output application/json
 ---
 {
-	Status: "Success!"
+	Status: Mule::p('success.delete-astronauts-database-message')
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
@@ -96,7 +96,7 @@ output application/json
 output application/json
 ---
 {
-	Status: "Success!"
+	Status: Mule::p('success.delete-astronauts-database-message')
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
