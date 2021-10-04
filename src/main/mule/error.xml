@@ -149,4 +149,15 @@ output application/json
 			<set-variable value="${httpStatus.notFound}" doc:name="httpStatus" doc:id="1944d554-eeef-4e7b-aed8-cc3994c7ffc7" variableName="httpStatus" />
 		</on-error-propagate>
 	</error-handler>
+	<error-handler name="interface-built-in-error-handlers" doc:id="7ce89014-189c-4063-ab57-dd30e44fd668" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="1bca960d-69f2-43e1-b49c-ddb0dcc576b1" type="APIKIT:BAD_REQUEST"/>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="f6d0049c-9187-43e0-abff-4a7cfd6c2335" type="APIKIT:NOT_FOUND"/>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b6bf6a07-33db-4cdf-8fd8-225aaa0b88ab" type="APIKIT:METHOD_NOT_ALLOWED"/>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="996b5e29-8b30-4b8f-883d-b61260ccebe6" type="APIKIT:NOT_ACCEPTABLE"/>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b422eac5-3e01-482a-b01e-73a178030712" type="APIKIT:UNSUPPORTED_MEDIA_TYPE"/>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b305d059-d2f8-4b13-968e-b75086582995" type="APIKIT:NOT_IMPLEMENTED"/>
+	</error-handler>
+	<error-handler name="interface-console-built-in-error-handlers" doc:id="316ce9c0-9265-4a62-8c71-00b498ee5ee4" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="6cae47b9-be32-4b5a-adac-f5d13d520059" type="APIKIT:NOT_FOUND"/>
+	</error-handler>
 </mule>

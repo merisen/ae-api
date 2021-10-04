@@ -119,7 +119,7 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="get:\exploration:exploration-config">
+	<flow name="get:\exploration:exploration-config">
         <flow-ref doc:name="exploration-get-subflow" doc:id="8a9968b4-dfef-4af4-8705-898c9e67d7b5" name="exploration-get" />
 		<error-handler ref="exploration-error-handling" />
     </flow>
