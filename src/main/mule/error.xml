@@ -150,14 +150,77 @@ output application/json
 		</on-error-propagate>
 	</error-handler>
 	<error-handler name="interface-built-in-error-handlers" doc:id="7ce89014-189c-4063-ab57-dd30e44fd668" >
-		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="1bca960d-69f2-43e1-b49c-ddb0dcc576b1" type="APIKIT:BAD_REQUEST"/>
-		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="f6d0049c-9187-43e0-abff-4a7cfd6c2335" type="APIKIT:NOT_FOUND"/>
-		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b6bf6a07-33db-4cdf-8fd8-225aaa0b88ab" type="APIKIT:METHOD_NOT_ALLOWED"/>
-		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="996b5e29-8b30-4b8f-883d-b61260ccebe6" type="APIKIT:NOT_ACCEPTABLE"/>
-		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b422eac5-3e01-482a-b01e-73a178030712" type="APIKIT:UNSUPPORTED_MEDIA_TYPE"/>
-		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b305d059-d2f8-4b13-968e-b75086582995" type="APIKIT:NOT_IMPLEMENTED"/>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="1bca960d-69f2-43e1-b49c-ddb0dcc576b1" type="APIKIT:BAD_REQUEST">
+			<ee:transform doc:name="Transform Message" doc:id="59f35a57-19d5-4c3b-9855-b833af64a2be" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Bad request"}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="f6d0049c-9187-43e0-abff-4a7cfd6c2335" type="APIKIT:NOT_FOUND">
+			<ee:transform doc:name="Transform Message" doc:id="d23470a1-584b-4b3f-b367-c2f957f80edb" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b6bf6a07-33db-4cdf-8fd8-225aaa0b88ab" type="APIKIT:METHOD_NOT_ALLOWED">
+			<ee:transform doc:name="Transform Message" doc:id="5609d1a0-0430-4878-8c67-630714441d2d" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Method not allowed"}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="996b5e29-8b30-4b8f-883d-b61260ccebe6" type="APIKIT:NOT_ACCEPTABLE">
+			<ee:transform doc:name="Transform Message" doc:id="5322e447-c802-45d2-9ecc-4dc2f46c44d3" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not acceptable"}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b422eac5-3e01-482a-b01e-73a178030712" type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+			<ee:transform doc:name="Transform Message" doc:id="93367b49-f5c0-4067-8a09-0b7c4326a74e" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Unsupported media type"}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b305d059-d2f8-4b13-968e-b75086582995" type="APIKIT:NOT_IMPLEMENTED">
+			<ee:transform doc:name="Transform Message" doc:id="b900d0a2-8c86-4f25-afc3-1feb52e4f79c" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not Implemented"}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
 	</error-handler>
 	<error-handler name="interface-console-built-in-error-handlers" doc:id="316ce9c0-9265-4a62-8c71-00b498ee5ee4" >
-		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="6cae47b9-be32-4b5a-adac-f5d13d520059" type="APIKIT:NOT_FOUND"/>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="6cae47b9-be32-4b5a-adac-f5d13d520059" type="APIKIT:NOT_FOUND">
+			<ee:transform doc:name="Transform Message" doc:id="c561185a-8343-4e7a-936b-aedc248d1347" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
 	</error-handler>
 </mule>
