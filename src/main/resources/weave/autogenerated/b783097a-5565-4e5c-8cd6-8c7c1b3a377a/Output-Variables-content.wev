@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_b783097a_5565_4e5c_8cd6_8c7c1b3a377a_Output_Variables_content = Binary
+

@@ -1,0 +1,16 @@
+%dw 2.0
+
+type auto_b783097a_5565_4e5c_8cd6_8c7c1b3a377a_Output_Variables_help_var = {|
+  "GitHub Project": String, 
+  "GitHub Wiki": String, 
+  Authors: String, 
+  "Available query endpoints for /exploration": {|
+    "Get Help page": String, 
+    "Display number of requests": String, 
+    "Transform output formats": String, 
+    "Get Astronauts": String, 
+    "Get International Space Station": String, 
+    "Get Astronauts Expedition": String
+  |}
+|}
+

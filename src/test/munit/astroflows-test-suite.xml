@@ -1,0 +1,2318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<munit:config name="astroflows-test-suite.xml" />
+	<munit:test name="default-astronauts-exploration-help-output-test" doc:id="c48b4069-1376-4740-9fb2-0f96ea302ce8" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="b134fb7c-9e04-4f93-bf0a-2c8457e9a11d" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="request" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"GitHub Project": "https://github.com/merisen/astronauts-exploration-api",
+	"GitHub Wiki": "https://github.com/merisen/astronauts-exploration-api/wiki",
+	Authors: "Viktor Duda, Roman Skaskiv",
+	"Available query endpoints for /exploration in use Astronauts Research API":
+	{
+		"Get Help page": "help : info",
+		"Display number of requests": "data-count : 12",
+		"Get Astronauts": "astronauts : all, spacedevs, iss, dump(change path in the config.yaml)",
+		"Get International Space Station": "iss : raw, location"
+	},
+	"Available query POST endpoints for /exploration in use Astronauts Research API":
+	{
+		"Create custom collection": "create : collection name",
+		"Drop custom collection": "drop : collection name",
+		"Get actual data from the FTP-Server": "email : test@test.com & file : actual_all_astronauts, actual_iss_astronauts, actual_spacedevs_astronauts"
+	}
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="97f530af-9545-472a-91d2-34751144a3c7" processor="sub-flow">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c50e0df4-7926-4a6b-b703-e5a5bff16d6a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.request]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to astronauts-exploration" doc:id="bc4c5f11-cc0a-40c2-90c0-a2c784718568" name="astronauts-exploration"/>
+			<ee:transform doc:name="Transform Message" doc:id="53b4c103-8fe2-42ed-8065-e166f15a3001" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="out" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"GitHub Project": "https://github.com/merisen/astronauts-exploration-api",
+	"GitHub Wiki": "https://github.com/merisen/astronauts-exploration-api/wiki",
+	Authors: "Viktor Duda, Roman Skaskiv",
+	"Available query endpoints for /exploration in use Astronauts Research API":
+	{
+		"Get Help page": "help : info",
+		"Display number of requests": "data-count : 12",
+		"Get Astronauts": "astronauts : all, spacedevs, iss, dump(change path in the config.yaml)",
+		"Get International Space Station": "iss : raw, location"
+	},
+	"Available query POST endpoints for /exploration in use Astronauts Research API":
+	{
+		"Create custom collection": "create : collection name",
+		"Drop custom collection": "drop : collection name",
+		"Get actual data from the FTP-Server": "email : test@test.com & file : actual_all_astronauts, actual_iss_astronauts, actual_spacedevs_astronauts"
+	}
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="a7ebfc0e-fb50-40b0-b2a1-80550aa2a2c9" is="#[MunitTools::equalTo(vars.out)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="all-astronauts-exploration-request-output-test" doc:id="c8ada135-f441-4f29-9efe-8844361744f8" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="170fbe7d-06ca-4445-828e-1b2eee8eb42e" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="request" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "results": [
+        {
+            "id": 276,
+            "name": "Franz Viehböck",
+            "date_of_birth": "1960-08-24",
+            "nationality": "Austrian",
+            "wiki": "https://en.wikipedia.org/wiki/Franz_Viehb%C3%B6ck",
+            "agency": {
+                "name": "Austrian Space Agency"
+            },
+            "last_flight": "1991-10-02T05:59:38Z",
+            "first_flight": "1991-10-02T05:59:38Z"
+        },
+        {
+            "id": 225,
+            "name": "Marcos Pontes",
+            "date_of_birth": "1963-03-11",
+            "nationality": "Brazilian",
+            "wiki": "https://en.wikipedia.org/wiki/Marcos_Pontes",
+            "agency": {
+                "name": "Brazilian Space Agency"
+            },
+            "last_flight": "2006-03-30T02:30:00Z",
+            "first_flight": "2006-03-30T02:30:00Z"
+        },
+        {
+            "id": 59,
+            "name": "Aleksandr Panayotov Aleksandrov",
+            "date_of_birth": "1951-12-01",
+            "nationality": "Bulgarian",
+            "wiki": "https://en.wikipedia.org/wiki/Aleksandr_Panayotov_Aleksandrov",
+            "agency": {
+                "name": "Bulgarian Space Agency"
+            },
+            "last_flight": "1988-06-07T14:03:13Z",
+            "first_flight": "1988-06-07T14:03:13Z"
+        },
+        {
+            "id": 112,
+            "name": "Marc Garneau",
+            "date_of_birth": "1949-02-23",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Marc_Garneau",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2000-12-01T03:06:00Z",
+            "first_flight": "1984-10-05T11:03:00Z"
+        },
+        {
+            "id": 125,
+            "name": "Jeremy Hansen",
+            "date_of_birth": "1976-01-27",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Jeremy_Hansen",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": null,
+            "first_flight": null
+        },
+        {
+            "id": 6,
+            "name": "David Saint-Jacques",
+            "date_of_birth": "1970-01-06",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/David_Saint-Jacques",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2018-12-03T11:31:52Z",
+            "first_flight": "2018-12-03T11:31:52Z"
+        },
+        {
+            "id": 5,
+            "name": "Chris Hadfield",
+            "date_of_birth": "1959-08-29",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Chris_Hadfield",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2012-12-19T12:12:35Z",
+            "first_flight": "1995-11-12T12:30:43Z"
+        },
+        {
+            "id": 188,
+            "name": "Steve MacLean",
+            "date_of_birth": "1954-12-14",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Steve_MacLean_(astronaut)",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2006-09-09T15:14:55Z",
+            "first_flight": "1992-10-22T14:05:53Z"
+        },
+        {
+            "id": 220,
+            "name": "Julie Payette",
+            "date_of_birth": "1963-10-20",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Julie_Payette",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2009-07-15T22:03:00Z",
+            "first_flight": "1999-05-27T10:49:42Z"
+        },
+        {
+            "id": 265,
+            "name": "Robert Thirsk",
+            "date_of_birth": "1953-08-17",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Robert_Thirsk",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2009-05-27T10:34:53Z",
+            "first_flight": "1996-06-20T14:49:00Z"
+        }
+    ],
+    "people": [
+        {
+            "craft": "ISS",
+            "name": "Mark Vande Hei"
+        },
+        {
+            "craft": "ISS",
+            "name": "Oleg Novitskiy"
+        },
+        {
+            "craft": "ISS",
+            "name": "Pyotr Dubrov"
+        },
+        {
+            "craft": "ISS",
+            "name": "Thomas Pesquet"
+        },
+        {
+            "craft": "ISS",
+            "name": "Megan McArthur"
+        },
+        {
+            "craft": "ISS",
+            "name": "Shane Kimbrough"
+        },
+        {
+            "craft": "ISS",
+            "name": "Akihiko Hoshide"
+        }
+    ]
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="e5529019-da69-446d-9afe-5c4b9285ccae" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="32c85a18-a3f9-44b7-a878-8471b1bf57a5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.request]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="6c731cb3-1df3-4f1a-b72f-45932c11d783" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{astronauts:"all"}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to astronauts-exploration" doc:id="b490b567-5b95-4945-9125-cc534e62c3ed" name="astronauts-exploration"/>
+			<ee:transform doc:name="Transform Message" doc:id="7a2dd54a-2c19-495a-adad-f48971a48e29" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="out" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "results": [
+        {
+            "id": 276,
+            "name": "Franz Viehböck",
+            "date_of_birth": "1960-08-24",
+            "nationality": "Austrian",
+            "wiki": "https://en.wikipedia.org/wiki/Franz_Viehb%C3%B6ck",
+            "agency": {
+                "name": "Austrian Space Agency"
+            },
+            "last_flight": "1991-10-02T05:59:38Z",
+            "first_flight": "1991-10-02T05:59:38Z"
+        },
+        {
+            "id": 225,
+            "name": "Marcos Pontes",
+            "date_of_birth": "1963-03-11",
+            "nationality": "Brazilian",
+            "wiki": "https://en.wikipedia.org/wiki/Marcos_Pontes",
+            "agency": {
+                "name": "Brazilian Space Agency"
+            },
+            "last_flight": "2006-03-30T02:30:00Z",
+            "first_flight": "2006-03-30T02:30:00Z"
+        },
+        {
+            "id": 59,
+            "name": "Aleksandr Panayotov Aleksandrov",
+            "date_of_birth": "1951-12-01",
+            "nationality": "Bulgarian",
+            "wiki": "https://en.wikipedia.org/wiki/Aleksandr_Panayotov_Aleksandrov",
+            "agency": {
+                "name": "Bulgarian Space Agency"
+            },
+            "last_flight": "1988-06-07T14:03:13Z",
+            "first_flight": "1988-06-07T14:03:13Z"
+        },
+        {
+            "id": 112,
+            "name": "Marc Garneau",
+            "date_of_birth": "1949-02-23",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Marc_Garneau",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2000-12-01T03:06:00Z",
+            "first_flight": "1984-10-05T11:03:00Z"
+        },
+        {
+            "id": 125,
+            "name": "Jeremy Hansen",
+            "date_of_birth": "1976-01-27",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Jeremy_Hansen",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": null,
+            "first_flight": null
+        },
+        {
+            "id": 6,
+            "name": "David Saint-Jacques",
+            "date_of_birth": "1970-01-06",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/David_Saint-Jacques",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2018-12-03T11:31:52Z",
+            "first_flight": "2018-12-03T11:31:52Z"
+        },
+        {
+            "id": 5,
+            "name": "Chris Hadfield",
+            "date_of_birth": "1959-08-29",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Chris_Hadfield",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2012-12-19T12:12:35Z",
+            "first_flight": "1995-11-12T12:30:43Z"
+        },
+        {
+            "id": 188,
+            "name": "Steve MacLean",
+            "date_of_birth": "1954-12-14",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Steve_MacLean_(astronaut)",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2006-09-09T15:14:55Z",
+            "first_flight": "1992-10-22T14:05:53Z"
+        },
+        {
+            "id": 220,
+            "name": "Julie Payette",
+            "date_of_birth": "1963-10-20",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Julie_Payette",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2009-07-15T22:03:00Z",
+            "first_flight": "1999-05-27T10:49:42Z"
+        },
+        {
+            "id": 265,
+            "name": "Robert Thirsk",
+            "date_of_birth": "1953-08-17",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Robert_Thirsk",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2009-05-27T10:34:53Z",
+            "first_flight": "1996-06-20T14:49:00Z"
+        }
+    ],
+    "people": [
+        {
+            "craft": "ISS",
+            "name": "Mark Vande Hei"
+        },
+        {
+            "craft": "ISS",
+            "name": "Oleg Novitskiy"
+        },
+        {
+            "craft": "ISS",
+            "name": "Pyotr Dubrov"
+        },
+        {
+            "craft": "ISS",
+            "name": "Thomas Pesquet"
+        },
+        {
+            "craft": "ISS",
+            "name": "Megan McArthur"
+        },
+        {
+            "craft": "ISS",
+            "name": "Shane Kimbrough"
+        },
+        {
+            "craft": "ISS",
+            "name": "Akihiko Hoshide"
+        }
+    ]
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="8c59e2d8-8562-48f7-b9ee-118273af2ac9" is="#[MunitTools::equalTo(vars.out)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="spacedevs-astronauts-exploration-request-output-test" doc:id="c4b9f069-a75a-4026-9eeb-c3aef9c663be" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="8242ed04-2640-4af3-827e-b7cddac6b320" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="request" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "results": [
+        {
+            "id": 276,
+            "name": "Franz Viehböck",
+            "date_of_birth": "1960-08-24",
+            "nationality": "Austrian",
+            "wiki": "https://en.wikipedia.org/wiki/Franz_Viehb%C3%B6ck",
+            "agency": {
+                "name": "Austrian Space Agency"
+            },
+            "last_flight": "1991-10-02T05:59:38Z",
+            "first_flight": "1991-10-02T05:59:38Z"
+        },
+        {
+            "id": 225,
+            "name": "Marcos Pontes",
+            "date_of_birth": "1963-03-11",
+            "nationality": "Brazilian",
+            "wiki": "https://en.wikipedia.org/wiki/Marcos_Pontes",
+            "agency": {
+                "name": "Brazilian Space Agency"
+            },
+            "last_flight": "2006-03-30T02:30:00Z",
+            "first_flight": "2006-03-30T02:30:00Z"
+        },
+        {
+            "id": 59,
+            "name": "Aleksandr Panayotov Aleksandrov",
+            "date_of_birth": "1951-12-01",
+            "nationality": "Bulgarian",
+            "wiki": "https://en.wikipedia.org/wiki/Aleksandr_Panayotov_Aleksandrov",
+            "agency": {
+                "name": "Bulgarian Space Agency"
+            },
+            "last_flight": "1988-06-07T14:03:13Z",
+            "first_flight": "1988-06-07T14:03:13Z"
+        },
+        {
+            "id": 112,
+            "name": "Marc Garneau",
+            "date_of_birth": "1949-02-23",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Marc_Garneau",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2000-12-01T03:06:00Z",
+            "first_flight": "1984-10-05T11:03:00Z"
+        },
+        {
+            "id": 125,
+            "name": "Jeremy Hansen",
+            "date_of_birth": "1976-01-27",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Jeremy_Hansen",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": null,
+            "first_flight": null
+        },
+        {
+            "id": 6,
+            "name": "David Saint-Jacques",
+            "date_of_birth": "1970-01-06",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/David_Saint-Jacques",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2018-12-03T11:31:52Z",
+            "first_flight": "2018-12-03T11:31:52Z"
+        },
+        {
+            "id": 5,
+            "name": "Chris Hadfield",
+            "date_of_birth": "1959-08-29",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Chris_Hadfield",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2012-12-19T12:12:35Z",
+            "first_flight": "1995-11-12T12:30:43Z"
+        },
+        {
+            "id": 188,
+            "name": "Steve MacLean",
+            "date_of_birth": "1954-12-14",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Steve_MacLean_(astronaut)",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2006-09-09T15:14:55Z",
+            "first_flight": "1992-10-22T14:05:53Z"
+        },
+        {
+            "id": 220,
+            "name": "Julie Payette",
+            "date_of_birth": "1963-10-20",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Julie_Payette",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2009-07-15T22:03:00Z",
+            "first_flight": "1999-05-27T10:49:42Z"
+        },
+        {
+            "id": 265,
+            "name": "Robert Thirsk",
+            "date_of_birth": "1953-08-17",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Robert_Thirsk",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2009-05-27T10:34:53Z",
+            "first_flight": "1996-06-20T14:49:00Z"
+        }
+    ]
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="90a5ba90-39bd-4a9c-a6be-7685bcfab479" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="3842ddc9-84db-4d7b-b988-2b1883340be5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.request]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="670b0db3-cb2f-41c0-9e76-47303246dbf9" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{astronauts:"spacedevs"}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to astronauts-exploration" doc:id="4f056c1f-7c6d-4d1c-bef3-5f1b0fb72671" name="astronauts-exploration"/>
+			<ee:transform doc:name="Transform Message" doc:id="ed521637-391f-4c49-8634-d858e3e60998" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="out" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "results": [
+        {
+            "id": 276,
+            "name": "Franz Viehböck",
+            "date_of_birth": "1960-08-24",
+            "nationality": "Austrian",
+            "wiki": "https://en.wikipedia.org/wiki/Franz_Viehb%C3%B6ck",
+            "agency": {
+                "name": "Austrian Space Agency"
+            },
+            "last_flight": "1991-10-02T05:59:38Z",
+            "first_flight": "1991-10-02T05:59:38Z"
+        },
+        {
+            "id": 225,
+            "name": "Marcos Pontes",
+            "date_of_birth": "1963-03-11",
+            "nationality": "Brazilian",
+            "wiki": "https://en.wikipedia.org/wiki/Marcos_Pontes",
+            "agency": {
+                "name": "Brazilian Space Agency"
+            },
+            "last_flight": "2006-03-30T02:30:00Z",
+            "first_flight": "2006-03-30T02:30:00Z"
+        },
+        {
+            "id": 59,
+            "name": "Aleksandr Panayotov Aleksandrov",
+            "date_of_birth": "1951-12-01",
+            "nationality": "Bulgarian",
+            "wiki": "https://en.wikipedia.org/wiki/Aleksandr_Panayotov_Aleksandrov",
+            "agency": {
+                "name": "Bulgarian Space Agency"
+            },
+            "last_flight": "1988-06-07T14:03:13Z",
+            "first_flight": "1988-06-07T14:03:13Z"
+        },
+        {
+            "id": 112,
+            "name": "Marc Garneau",
+            "date_of_birth": "1949-02-23",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Marc_Garneau",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2000-12-01T03:06:00Z",
+            "first_flight": "1984-10-05T11:03:00Z"
+        },
+        {
+            "id": 125,
+            "name": "Jeremy Hansen",
+            "date_of_birth": "1976-01-27",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Jeremy_Hansen",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": null,
+            "first_flight": null
+        },
+        {
+            "id": 6,
+            "name": "David Saint-Jacques",
+            "date_of_birth": "1970-01-06",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/David_Saint-Jacques",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2018-12-03T11:31:52Z",
+            "first_flight": "2018-12-03T11:31:52Z"
+        },
+        {
+            "id": 5,
+            "name": "Chris Hadfield",
+            "date_of_birth": "1959-08-29",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Chris_Hadfield",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2012-12-19T12:12:35Z",
+            "first_flight": "1995-11-12T12:30:43Z"
+        },
+        {
+            "id": 188,
+            "name": "Steve MacLean",
+            "date_of_birth": "1954-12-14",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Steve_MacLean_(astronaut)",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2006-09-09T15:14:55Z",
+            "first_flight": "1992-10-22T14:05:53Z"
+        },
+        {
+            "id": 220,
+            "name": "Julie Payette",
+            "date_of_birth": "1963-10-20",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Julie_Payette",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2009-07-15T22:03:00Z",
+            "first_flight": "1999-05-27T10:49:42Z"
+        },
+        {
+            "id": 265,
+            "name": "Robert Thirsk",
+            "date_of_birth": "1953-08-17",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Robert_Thirsk",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2009-05-27T10:34:53Z",
+            "first_flight": "1996-06-20T14:49:00Z"
+        }
+    ]
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="3d5dcce8-0bd4-4372-9d40-f102f5f003d1" is="#[MunitTools::equalTo(vars.out)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="iss-astronauts-exploration-request-output-test" doc:id="801c8512-0670-463b-8ff1-326992469bbf" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="08561c75-9f1c-4c13-9423-0ca5076ad87d" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="request" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "people": [
+        {
+            "name": "Mark Vande Hei",
+            "craft": "ISS"
+        },
+        {
+            "name": "Oleg Novitskiy",
+            "craft": "ISS"
+        },
+        {
+            "name": "Pyotr Dubrov",
+            "craft": "ISS"
+        },
+        {
+            "name": "Thomas Pesquet",
+            "craft": "ISS"
+        },
+        {
+            "name": "Megan McArthur",
+            "craft": "ISS"
+        },
+        {
+            "name": "Shane Kimbrough",
+            "craft": "ISS"
+        },
+        {
+            "name": "Akihiko Hoshide",
+            "craft": "ISS"
+        }
+    ]
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="be63f10f-f3a3-49c0-98d5-c500fdd309d7" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="9a55248c-c7f9-4d96-bcc7-958d51521986" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.request]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="f9c1d700-23b4-4dff-890e-92264d3d63ad" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{astronauts:"iss"}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to astronauts-exploration" doc:id="1583a1b7-6565-48b7-90f9-41557fa89170" name="astronauts-exploration"/>
+			<ee:transform doc:name="Transform Message" doc:id="c61944b4-949d-4f8a-9e42-8765d5055c14" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="out" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "people": [
+        {
+            "name": "Mark Vande Hei",
+            "craft": "ISS"
+        },
+        {
+            "name": "Oleg Novitskiy",
+            "craft": "ISS"
+        },
+        {
+            "name": "Pyotr Dubrov",
+            "craft": "ISS"
+        },
+        {
+            "name": "Thomas Pesquet",
+            "craft": "ISS"
+        },
+        {
+            "name": "Megan McArthur",
+            "craft": "ISS"
+        },
+        {
+            "name": "Shane Kimbrough",
+            "craft": "ISS"
+        },
+        {
+            "name": "Akihiko Hoshide",
+            "craft": "ISS"
+        }
+    ]
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="aebd8fc2-c78e-43c8-9dbd-fc46b9137b14" is="#[MunitTools::equalTo(vars.out)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="default-astronauts-request-transform-message-test" doc:id="704d1f6d-b1c1-46d8-aa9a-cef2a5f3336c" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="1f8655a1-08ce-4eb1-b9a7-7aa6bacbc68f" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="r" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "GitHub": "All updated information and API you cand find here: https://github.com/merisen/astronaut-research-api",
+    "QueryList": {
+        "GetAllAstronauts": "astronauts : all",
+        "GetAstronautsOnlyFromTheSpaceDevs": "astronauts : spacedevs",
+        "GetAstronautsOnlyFromISS": "astronauts : iss",
+        "FilterSpaceDevsAstronautsByName": "astronautName : Marc+Garneau",
+        "FilterSpaceDevsAstronautsByNationality": "nationality : Canadian",
+        "FilterISSAstronautsByName": "issName : Pyotr+Dubrov",
+        "FilterISSAstronautsByCraft": "craft : Tiangong",
+        "GetThisHelpPage": "help : info"
+    }
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="fc121435-a962-4009-85ee-e913a94b10f3" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="4015cea4-b186-4187-ad17-9ee3f345293d" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.r]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to astronauts-request-transform-message" doc:id="cfa4a9e0-3757-4d38-9ee5-c21612e713ea" name="astronauts-request-transform-message"/>
+			<ee:transform doc:name="Transform Message" doc:id="6e53cd66-1f77-4461-beff-c50a9662cfaa" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="o" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "GitHub": "All updated information and API you cand find here: https://github.com/merisen/astronaut-research-api",
+    "QueryList": {
+        "GetAllAstronauts": "astronauts : all",
+        "GetAstronautsOnlyFromTheSpaceDevs": "astronauts : spacedevs",
+        "GetAstronautsOnlyFromISS": "astronauts : iss",
+        "FilterSpaceDevsAstronautsByName": "astronautName : Marc+Garneau",
+        "FilterSpaceDevsAstronautsByNationality": "nationality : Canadian",
+        "FilterISSAstronautsByName": "issName : Pyotr+Dubrov",
+        "FilterISSAstronautsByCraft": "craft : Tiangong",
+        "GetThisHelpPage": "help : info"
+    }
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="4dc06eb6-73a0-4511-ab24-29bbbf3d4c22" is="#[MunitTools::equalTo(vars.o)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="iss-astronauts-request-transform-message-test" doc:id="f2730c2b-2588-4623-92d8-47e4e287aeaf" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="d30a00f0-5b2c-499e-acf8-c412267b7b9e" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="r" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "people": [
+        {
+            "name": "Mark Vande Hei",
+            "craft": "ISS"
+        },
+        {
+            "name": "Oleg Novitskiy",
+            "craft": "ISS"
+        },
+        {
+            "name": "Pyotr Dubrov",
+            "craft": "ISS"
+        },
+        {
+            "name": "Thomas Pesquet",
+            "craft": "ISS"
+        },
+        {
+            "name": "Megan McArthur",
+            "craft": "ISS"
+        },
+        {
+            "name": "Shane Kimbrough",
+            "craft": "ISS"
+        },
+        {
+            "name": "Akihiko Hoshide",
+            "craft": "ISS"
+        }
+    ]
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="bf549bfd-e160-4b21-a4af-2deca8cfd3e9" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="4015cea4-b186-4187-ad17-9ee3f345293d" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.r]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="531ceeca-35e8-4542-a93e-208dcc7539cd" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{astronauts:"iss"}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to astronauts-request-transform-message" doc:id="9c0d698b-cbb9-47c1-b6dd-d5dbf27d3480" name="astronauts-request-transform-message"/>
+			<ee:transform doc:name="Transform Message" doc:id="2dce6910-8c8c-4698-be1a-424300db6868" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="o" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "people": [
+        {
+            "name": "Mark Vande Hei",
+            "craft": "ISS"
+        },
+        {
+            "name": "Oleg Novitskiy",
+            "craft": "ISS"
+        },
+        {
+            "name": "Pyotr Dubrov",
+            "craft": "ISS"
+        },
+        {
+            "name": "Thomas Pesquet",
+            "craft": "ISS"
+        },
+        {
+            "name": "Megan McArthur",
+            "craft": "ISS"
+        },
+        {
+            "name": "Shane Kimbrough",
+            "craft": "ISS"
+        },
+        {
+            "name": "Akihiko Hoshide",
+            "craft": "ISS"
+        }
+    ]
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="9f0f66b7-ebc3-4463-b73e-1f8bf3de2495" is="#[MunitTools::equalTo(vars.o)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="spacedevs-astronauts-request-transform-message-test" doc:id="1d982dc0-34ad-442d-b473-842912db75e7" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="19334809-442f-400b-8f17-d809f249ccb9" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="r" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "results": [
+        {
+            "id": 276,
+            "name": "Franz Viehböck",
+            "date_of_birth": "1960-08-24",
+            "nationality": "Austrian",
+            "wiki": "https://en.wikipedia.org/wiki/Franz_Viehb%C3%B6ck",
+            "agency": {
+                "name": "Austrian Space Agency"
+            },
+            "last_flight": "1991-10-02T05:59:38Z",
+            "first_flight": "1991-10-02T05:59:38Z"
+        },
+        {
+            "id": 225,
+            "name": "Marcos Pontes",
+            "date_of_birth": "1963-03-11",
+            "nationality": "Brazilian",
+            "wiki": "https://en.wikipedia.org/wiki/Marcos_Pontes",
+            "agency": {
+                "name": "Brazilian Space Agency"
+            },
+            "last_flight": "2006-03-30T02:30:00Z",
+            "first_flight": "2006-03-30T02:30:00Z"
+        },
+        {
+            "id": 59,
+            "name": "Aleksandr Panayotov Aleksandrov",
+            "date_of_birth": "1951-12-01",
+            "nationality": "Bulgarian",
+            "wiki": "https://en.wikipedia.org/wiki/Aleksandr_Panayotov_Aleksandrov",
+            "agency": {
+                "name": "Bulgarian Space Agency"
+            },
+            "last_flight": "1988-06-07T14:03:13Z",
+            "first_flight": "1988-06-07T14:03:13Z"
+        },
+        {
+            "id": 112,
+            "name": "Marc Garneau",
+            "date_of_birth": "1949-02-23",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Marc_Garneau",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2000-12-01T03:06:00Z",
+            "first_flight": "1984-10-05T11:03:00Z"
+        },
+        {
+            "id": 125,
+            "name": "Jeremy Hansen",
+            "date_of_birth": "1976-01-27",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Jeremy_Hansen",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": null,
+            "first_flight": null
+        },
+        {
+            "id": 6,
+            "name": "David Saint-Jacques",
+            "date_of_birth": "1970-01-06",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/David_Saint-Jacques",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2018-12-03T11:31:52Z",
+            "first_flight": "2018-12-03T11:31:52Z"
+        },
+        {
+            "id": 5,
+            "name": "Chris Hadfield",
+            "date_of_birth": "1959-08-29",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Chris_Hadfield",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2012-12-19T12:12:35Z",
+            "first_flight": "1995-11-12T12:30:43Z"
+        },
+        {
+            "id": 188,
+            "name": "Steve MacLean",
+            "date_of_birth": "1954-12-14",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Steve_MacLean_(astronaut)",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2006-09-09T15:14:55Z",
+            "first_flight": "1992-10-22T14:05:53Z"
+        },
+        {
+            "id": 220,
+            "name": "Julie Payette",
+            "date_of_birth": "1963-10-20",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Julie_Payette",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2009-07-15T22:03:00Z",
+            "first_flight": "1999-05-27T10:49:42Z"
+        },
+        {
+            "id": 265,
+            "name": "Robert Thirsk",
+            "date_of_birth": "1953-08-17",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Robert_Thirsk",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2009-05-27T10:34:53Z",
+            "first_flight": "1996-06-20T14:49:00Z"
+        }
+    ]
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="80003879-ea42-4846-9c09-fd410642fd4c" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="4015cea4-b186-4187-ad17-9ee3f345293d" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.r]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="cb1f6b7f-a78f-4780-82ef-b6a9613e53a0" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{astronauts:"spacedevs"}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to astronauts-request-transform-message" doc:id="ac20d875-e9d8-489a-aa9a-6104e7ba8881" name="astronauts-request-transform-message"/>
+			<ee:transform doc:name="Transform Message" doc:id="92330163-6208-4647-a9ab-1e47b43c1dca" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="o" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "results": [
+        {
+            "id": 276,
+            "name": "Franz Viehböck",
+            "date_of_birth": "1960-08-24",
+            "nationality": "Austrian",
+            "wiki": "https://en.wikipedia.org/wiki/Franz_Viehb%C3%B6ck",
+            "agency": {
+                "name": "Austrian Space Agency"
+            },
+            "last_flight": "1991-10-02T05:59:38Z",
+            "first_flight": "1991-10-02T05:59:38Z"
+        },
+        {
+            "id": 225,
+            "name": "Marcos Pontes",
+            "date_of_birth": "1963-03-11",
+            "nationality": "Brazilian",
+            "wiki": "https://en.wikipedia.org/wiki/Marcos_Pontes",
+            "agency": {
+                "name": "Brazilian Space Agency"
+            },
+            "last_flight": "2006-03-30T02:30:00Z",
+            "first_flight": "2006-03-30T02:30:00Z"
+        },
+        {
+            "id": 59,
+            "name": "Aleksandr Panayotov Aleksandrov",
+            "date_of_birth": "1951-12-01",
+            "nationality": "Bulgarian",
+            "wiki": "https://en.wikipedia.org/wiki/Aleksandr_Panayotov_Aleksandrov",
+            "agency": {
+                "name": "Bulgarian Space Agency"
+            },
+            "last_flight": "1988-06-07T14:03:13Z",
+            "first_flight": "1988-06-07T14:03:13Z"
+        },
+        {
+            "id": 112,
+            "name": "Marc Garneau",
+            "date_of_birth": "1949-02-23",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Marc_Garneau",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2000-12-01T03:06:00Z",
+            "first_flight": "1984-10-05T11:03:00Z"
+        },
+        {
+            "id": 125,
+            "name": "Jeremy Hansen",
+            "date_of_birth": "1976-01-27",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Jeremy_Hansen",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": null,
+            "first_flight": null
+        },
+        {
+            "id": 6,
+            "name": "David Saint-Jacques",
+            "date_of_birth": "1970-01-06",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/David_Saint-Jacques",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2018-12-03T11:31:52Z",
+            "first_flight": "2018-12-03T11:31:52Z"
+        },
+        {
+            "id": 5,
+            "name": "Chris Hadfield",
+            "date_of_birth": "1959-08-29",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Chris_Hadfield",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2012-12-19T12:12:35Z",
+            "first_flight": "1995-11-12T12:30:43Z"
+        },
+        {
+            "id": 188,
+            "name": "Steve MacLean",
+            "date_of_birth": "1954-12-14",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Steve_MacLean_(astronaut)",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2006-09-09T15:14:55Z",
+            "first_flight": "1992-10-22T14:05:53Z"
+        },
+        {
+            "id": 220,
+            "name": "Julie Payette",
+            "date_of_birth": "1963-10-20",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Julie_Payette",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2009-07-15T22:03:00Z",
+            "first_flight": "1999-05-27T10:49:42Z"
+        },
+        {
+            "id": 265,
+            "name": "Robert Thirsk",
+            "date_of_birth": "1953-08-17",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Robert_Thirsk",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2009-05-27T10:34:53Z",
+            "first_flight": "1996-06-20T14:49:00Z"
+        }
+    ]
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="29878522-c000-4b9f-b5e6-05de55063993" is="#[MunitTools::equalTo(vars.o)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="all-astronauts-request-transform-message-test" doc:id="739a37ee-b495-48dd-a3c7-23d6a8bb7c34" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="d31de917-3aa4-409f-9702-6f8debf17b73" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="r" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "results": [
+        {
+            "id": 276,
+            "name": "Franz Viehböck",
+            "date_of_birth": "1960-08-24",
+            "nationality": "Austrian",
+            "wiki": "https://en.wikipedia.org/wiki/Franz_Viehb%C3%B6ck",
+            "agency": {
+                "name": "Austrian Space Agency"
+            },
+            "last_flight": "1991-10-02T05:59:38Z",
+            "first_flight": "1991-10-02T05:59:38Z"
+        },
+        {
+            "id": 225,
+            "name": "Marcos Pontes",
+            "date_of_birth": "1963-03-11",
+            "nationality": "Brazilian",
+            "wiki": "https://en.wikipedia.org/wiki/Marcos_Pontes",
+            "agency": {
+                "name": "Brazilian Space Agency"
+            },
+            "last_flight": "2006-03-30T02:30:00Z",
+            "first_flight": "2006-03-30T02:30:00Z"
+        },
+        {
+            "id": 59,
+            "name": "Aleksandr Panayotov Aleksandrov",
+            "date_of_birth": "1951-12-01",
+            "nationality": "Bulgarian",
+            "wiki": "https://en.wikipedia.org/wiki/Aleksandr_Panayotov_Aleksandrov",
+            "agency": {
+                "name": "Bulgarian Space Agency"
+            },
+            "last_flight": "1988-06-07T14:03:13Z",
+            "first_flight": "1988-06-07T14:03:13Z"
+        },
+        {
+            "id": 112,
+            "name": "Marc Garneau",
+            "date_of_birth": "1949-02-23",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Marc_Garneau",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2000-12-01T03:06:00Z",
+            "first_flight": "1984-10-05T11:03:00Z"
+        },
+        {
+            "id": 125,
+            "name": "Jeremy Hansen",
+            "date_of_birth": "1976-01-27",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Jeremy_Hansen",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": null,
+            "first_flight": null
+        },
+        {
+            "id": 6,
+            "name": "David Saint-Jacques",
+            "date_of_birth": "1970-01-06",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/David_Saint-Jacques",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2018-12-03T11:31:52Z",
+            "first_flight": "2018-12-03T11:31:52Z"
+        },
+        {
+            "id": 5,
+            "name": "Chris Hadfield",
+            "date_of_birth": "1959-08-29",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Chris_Hadfield",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2012-12-19T12:12:35Z",
+            "first_flight": "1995-11-12T12:30:43Z"
+        },
+        {
+            "id": 188,
+            "name": "Steve MacLean",
+            "date_of_birth": "1954-12-14",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Steve_MacLean_(astronaut)",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2006-09-09T15:14:55Z",
+            "first_flight": "1992-10-22T14:05:53Z"
+        },
+        {
+            "id": 220,
+            "name": "Julie Payette",
+            "date_of_birth": "1963-10-20",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Julie_Payette",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2009-07-15T22:03:00Z",
+            "first_flight": "1999-05-27T10:49:42Z"
+        },
+        {
+            "id": 265,
+            "name": "Robert Thirsk",
+            "date_of_birth": "1953-08-17",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Robert_Thirsk",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2009-05-27T10:34:53Z",
+            "first_flight": "1996-06-20T14:49:00Z"
+        }
+    ],
+    "people": [
+        {
+            "craft": "ISS",
+            "name": "Mark Vande Hei"
+        },
+        {
+            "craft": "ISS",
+            "name": "Oleg Novitskiy"
+        },
+        {
+            "craft": "ISS",
+            "name": "Pyotr Dubrov"
+        },
+        {
+            "craft": "ISS",
+            "name": "Thomas Pesquet"
+        },
+        {
+            "craft": "ISS",
+            "name": "Megan McArthur"
+        },
+        {
+            "craft": "ISS",
+            "name": "Shane Kimbrough"
+        },
+        {
+            "craft": "ISS",
+            "name": "Akihiko Hoshide"
+        }
+    ]
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="e9eeaed1-ceb5-4121-948c-ef7a1ce222ce" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="4015cea4-b186-4187-ad17-9ee3f345293d" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.r]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="11523fb8-3d59-4a19-b159-0508cf964ccf" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d1f96d28-6926-46bf-86e4-0b7d0da8440f" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="0c1e8206-a396-4504-876b-a7850988f01a" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{astronauts:"all"}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to astronauts-request-transform-message" doc:id="9e20b92f-c8d2-46fd-b747-e09be72119cd" name="astronauts-request-transform-message"/>
+			<ee:transform doc:name="Transform Message" doc:id="5327120c-7d98-41be-9ef0-5c139a76cfc1" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="o" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "results": [
+        {
+            "id": 276,
+            "name": "Franz Viehböck",
+            "date_of_birth": "1960-08-24",
+            "nationality": "Austrian",
+            "wiki": "https://en.wikipedia.org/wiki/Franz_Viehb%C3%B6ck",
+            "agency": {
+                "name": "Austrian Space Agency"
+            },
+            "last_flight": "1991-10-02T05:59:38Z",
+            "first_flight": "1991-10-02T05:59:38Z"
+        },
+        {
+            "id": 225,
+            "name": "Marcos Pontes",
+            "date_of_birth": "1963-03-11",
+            "nationality": "Brazilian",
+            "wiki": "https://en.wikipedia.org/wiki/Marcos_Pontes",
+            "agency": {
+                "name": "Brazilian Space Agency"
+            },
+            "last_flight": "2006-03-30T02:30:00Z",
+            "first_flight": "2006-03-30T02:30:00Z"
+        },
+        {
+            "id": 59,
+            "name": "Aleksandr Panayotov Aleksandrov",
+            "date_of_birth": "1951-12-01",
+            "nationality": "Bulgarian",
+            "wiki": "https://en.wikipedia.org/wiki/Aleksandr_Panayotov_Aleksandrov",
+            "agency": {
+                "name": "Bulgarian Space Agency"
+            },
+            "last_flight": "1988-06-07T14:03:13Z",
+            "first_flight": "1988-06-07T14:03:13Z"
+        },
+        {
+            "id": 112,
+            "name": "Marc Garneau",
+            "date_of_birth": "1949-02-23",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Marc_Garneau",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2000-12-01T03:06:00Z",
+            "first_flight": "1984-10-05T11:03:00Z"
+        },
+        {
+            "id": 125,
+            "name": "Jeremy Hansen",
+            "date_of_birth": "1976-01-27",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Jeremy_Hansen",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": null,
+            "first_flight": null
+        },
+        {
+            "id": 6,
+            "name": "David Saint-Jacques",
+            "date_of_birth": "1970-01-06",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/David_Saint-Jacques",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2018-12-03T11:31:52Z",
+            "first_flight": "2018-12-03T11:31:52Z"
+        },
+        {
+            "id": 5,
+            "name": "Chris Hadfield",
+            "date_of_birth": "1959-08-29",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Chris_Hadfield",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2012-12-19T12:12:35Z",
+            "first_flight": "1995-11-12T12:30:43Z"
+        },
+        {
+            "id": 188,
+            "name": "Steve MacLean",
+            "date_of_birth": "1954-12-14",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Steve_MacLean_(astronaut)",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2006-09-09T15:14:55Z",
+            "first_flight": "1992-10-22T14:05:53Z"
+        },
+        {
+            "id": 220,
+            "name": "Julie Payette",
+            "date_of_birth": "1963-10-20",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Julie_Payette",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2009-07-15T22:03:00Z",
+            "first_flight": "1999-05-27T10:49:42Z"
+        },
+        {
+            "id": 265,
+            "name": "Robert Thirsk",
+            "date_of_birth": "1953-08-17",
+            "nationality": "Canadian",
+            "wiki": "https://en.wikipedia.org/wiki/Robert_Thirsk",
+            "agency": {
+                "name": "Canadian Space Agency"
+            },
+            "last_flight": "2009-05-27T10:34:53Z",
+            "first_flight": "1996-06-20T14:49:00Z"
+        }
+    ],
+    "people": [
+        {
+            "craft": "ISS",
+            "name": "Mark Vande Hei"
+        },
+        {
+            "craft": "ISS",
+            "name": "Oleg Novitskiy"
+        },
+        {
+            "craft": "ISS",
+            "name": "Pyotr Dubrov"
+        },
+        {
+            "craft": "ISS",
+            "name": "Thomas Pesquet"
+        },
+        {
+            "craft": "ISS",
+            "name": "Megan McArthur"
+        },
+        {
+            "craft": "ISS",
+            "name": "Shane Kimbrough"
+        },
+        {
+            "craft": "ISS",
+            "name": "Akihiko Hoshide"
+        }
+    ]
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="30560aea-05f8-4f97-b6f6-5eac26f85d20" is="#[MunitTools::equalTo(vars.o)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="default-dump-collection-from-mongodb-test" doc:id="4799f0fe-48ab-4e50-9e22-b2c8f0d4903d" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="d2562540-1072-4262-be0f-3c99a652b3e2" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="r" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"GitHub Project": "https://github.com/merisen/astronauts-exploration-api",
+	"GitHub Wiki": "https://github.com/merisen/astronauts-exploration-api/wiki",
+	Authors: "Viktor Duda, Roman Skaskiv",
+	"Available query endpoints for /exploration in use Astronauts Research API":
+	{
+		"Get Help page": "help : info",
+		"Display number of requests": "data-count : 12",
+		"Get Astronauts": "astronauts : all, spacedevs, iss, dump(change path in the config.yaml)",
+		"Get International Space Station": "iss : raw, location"
+	},
+	"Available query POST endpoints for /exploration in use Astronauts Research API":
+	{
+		"Create custom collection": "create : collection name",
+		"Drop custom collection": "drop : collection name",
+		"Get actual data from the FTP-Server": "email : test@test.com & file : actual_all_astronauts, actual_iss_astronauts, actual_spacedevs_astronauts"
+	}
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="acfce5d8-9450-4391-a96e-b466a613ae5e" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="7ff42a85-9666-4f1f-afb0-e9a5d6ee03cd" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.r]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to dump-collection-from-mongodb" doc:id="5c2d7e6b-8ce5-4363-900c-150b30b0cf32" name="dump-collection-from-mongodb"/>
+			<ee:transform doc:name="Transform Message" doc:id="f9d2aeca-0a5c-42ad-b857-e460485a5662" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="o" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"GitHub Project": "https://github.com/merisen/astronauts-exploration-api",
+	"GitHub Wiki": "https://github.com/merisen/astronauts-exploration-api/wiki",
+	Authors: "Viktor Duda, Roman Skaskiv",
+	"Available query endpoints for /exploration in use Astronauts Research API":
+	{
+		"Get Help page": "help : info",
+		"Display number of requests": "data-count : 12",
+		"Get Astronauts": "astronauts : all, spacedevs, iss, dump(change path in the config.yaml)",
+		"Get International Space Station": "iss : raw, location"
+	},
+	"Available query POST endpoints for /exploration in use Astronauts Research API":
+	{
+		"Create custom collection": "create : collection name",
+		"Drop custom collection": "drop : collection name",
+		"Get actual data from the FTP-Server": "email : test@test.com & file : actual_all_astronauts, actual_iss_astronauts, actual_spacedevs_astronauts"
+	}
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="7eb11d70-b9d4-47b6-acb8-ac406e4eb788" is="#[MunitTools::equalTo(vars.o)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="param-dump-collection-from-mongodb-test" doc:id="0e21c898-86a5-4395-80e0-ccc28fd4af3e" description="Test">
+		<munit:behavior>
+			<ee:transform doc:name="Transform Message" doc:id="25a3cb81-75ee-4a4a-941a-ece2a5205e8c" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="r" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="f14f68f7-2675-4a28-b429-cb05d64045e0" processor="mongo:dump">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="0d09094c-eb26-4d6e-934b-0c3220f045d3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="fed6e56a-e19a-4379-ad93-515d9dafbb12" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{dump:"astronauts"}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to dump-collection-from-mongodb" doc:id="0c1b33f0-f88e-457a-9d5f-44c43a4876d8" name="dump-collection-from-mongodb"/>
+			<ee:transform doc:name="Transform Message" doc:id="e83948cc-eec7-4885-a423-60ca54b1d9f5" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="o" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="9daf08a5-6bb3-4283-af9f-93806d78a0f4" is="#[MunitTools::equalTo(vars.o)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="reference-param-dump-collection-from-mongodb-test" doc:id="16b36acf-c0dc-4a84-94d1-1d8c45aa583a" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="91c9d728-5158-499f-a900-e05847d9c508" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="r" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="4d8ca797-8881-470a-b7da-8348a9a8025c" processor="mongo:dump">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="0d09094c-eb26-4d6e-934b-0c3220f045d3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.r]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="b3f39b0b-de42-45e8-bd29-3ff3458531c9" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{dump:"astronauts"}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to astronauts-exploration" doc:id="83d909f2-c1d3-4c15-b38f-7efb8b58a596" name="astronauts-exploration"/>
+			<ee:transform doc:name="Transform Message" doc:id="251f537a-1ce1-4a32-bec7-b0f9da442841" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="o" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="245d2cf4-752a-477b-951f-81dea23f455d" is="#[MunitTools::equalTo(vars.o)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="all-astronauts-actual-data-from-ftp-send-by-email-test" doc:id="52ef534a-c90f-4768-92aa-3c400f6bacfb" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="b4bc93e7-68fe-47a9-a602-482ea7427a03" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="r" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="044e2ff7-860a-41ea-85b9-8a32be1d54bf" processor="ftp:read">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="741cef47-32fd-49f0-bc0c-aa09eb8b3815" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="d9103c03-9a38-4173-b40e-b8958fcaa4ac" processor="email:send">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="e19e62b2-5708-4dad-a35f-b851c8b19902" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="a7e59ac8-68ac-45d7-9a32-916201dd900f" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{email: "viktor.duda.it@icloud.com",file:"actual_all_astronauts"}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to actual-data-from-ftp-send-by-email" doc:id="19a9399b-e2bb-452d-911d-fc4c2f96aa8a" name="actual-data-from-ftp-send-by-email"/>
+			<ee:transform doc:name="Transform Message" doc:id="a5645c54-a272-4a11-8306-9700b1fefe3f" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="o" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="96013f41-aeb7-48ec-8673-51af36926be4" is="#[MunitTools::equalTo(vars.o)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="spacedevs-astronauts-actual-data-from-ftp-send-by-email-test" doc:id="e6d4002b-e011-4b28-8905-909c04c2912c" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="481695a7-bf32-4742-bd61-0ab2de9930c7" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="r" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="54febbd7-ce1c-469d-b846-d2f60007edc2" processor="ftp:read">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2d89f8a6-9e17-41d8-a62e-53f2a538cdc6" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="e4cc1995-a0c8-4f4c-938a-d0cc6681bebc" processor="email:send">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="86dbc191-9bae-4ea2-89c8-f36fd2761dba" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="9f87306f-a7bc-4d78-b8fa-922f9d0e9dfe" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{email: "viktor.duda.it@icloud.com",file:"actual_spacedevs_astronauts"}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to actual-data-from-ftp-send-by-email" doc:id="6cb592f1-3808-4573-9ead-7cebf6760140" name="actual-data-from-ftp-send-by-email"/>
+			<ee:transform doc:name="Transform Message" doc:id="49694865-d584-40bf-a691-2c2c2cfb9ce2" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="o" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="d093308e-54b5-465e-a43b-ae55c977700b" is="#[MunitTools::equalTo(vars.o)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="iss-astronauts-actual-data-from-ftp-send-by-email-test" doc:id="e4d2deac-b50d-4d4d-a92c-15d4eda37549" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="e39bf1f7-c6e7-4ffe-bd95-c9f51dd470bf" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="r" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="c5af80f1-b20d-48b9-a178-d6a6d3021fbd" processor="ftp:read">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="29e643a7-c95e-4e37-a229-f5f64065a82b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="d0004fb7-2d41-4a20-8bf1-d0396e34446e" processor="email:send">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="3a71ab63-712f-48f3-87a8-74d4e0ee74b5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="f233fc79-019a-4cfb-aa38-abf8235aea09" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{email: "viktor.duda.it@icloud.com",file:"actual_iss_astronauts"}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to actual-data-from-ftp-send-by-email" doc:id="4d666f90-8a2a-42a3-9482-f637917017b4" name="actual-data-from-ftp-send-by-email"/>
+			<ee:transform doc:name="Transform Message" doc:id="cf57a1d3-84fb-4b28-8996-32531dc18f59" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="o" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="6fa7419f-a59c-4db1-8f70-d37bc5cfe9c6" is="#[MunitTools::equalTo(vars.o)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="help-astronauts-actual-data-from-ftp-send-by-email-test" doc:id="88f978ca-60ac-464e-abb7-8ab238cf7c4e" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="f56de04d-09f6-488f-a215-707c4c1431c2" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="r" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"GitHub Project": "https://github.com/merisen/astronauts-exploration-api",
+	"GitHub Wiki": "https://github.com/merisen/astronauts-exploration-api/wiki",
+	Authors: "Viktor Duda, Roman Skaskiv",
+	"Available query endpoints for /exploration in use Astronauts Research API":
+	{
+		"Get Help page": "help : info",
+		"Display number of requests": "data-count : 12",
+		"Get Astronauts": "astronauts : all, spacedevs, iss, dump(change path in the config.yaml)",
+		"Get International Space Station": "iss : raw, location"
+	},
+	"Available query POST endpoints for /exploration in use Astronauts Research API":
+	{
+		"Create custom collection": "create : collection name",
+		"Drop custom collection": "drop : collection name",
+		"Get actual data from the FTP-Server": "email : test@test.com & file : actual_all_astronauts, actual_iss_astronauts, actual_spacedevs_astronauts"
+	}
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="c6a2d68a-e5b1-427e-8e66-87cd2a11a8fe" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="0c506444-4bdd-4d10-9056-627254482ae0" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.r]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to actual-data-from-ftp-send-by-email" doc:id="8daa3963-118b-48fd-9775-302166af663c" name="actual-data-from-ftp-send-by-email"/>
+			<ee:transform doc:name="Transform Message" doc:id="429a8782-80fd-4660-98cd-9cd7fef3022c" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="o" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"GitHub Project": "https://github.com/merisen/astronauts-exploration-api",
+	"GitHub Wiki": "https://github.com/merisen/astronauts-exploration-api/wiki",
+	Authors: "Viktor Duda, Roman Skaskiv",
+	"Available query endpoints for /exploration in use Astronauts Research API":
+	{
+		"Get Help page": "help : info",
+		"Display number of requests": "data-count : 12",
+		"Get Astronauts": "astronauts : all, spacedevs, iss, dump(change path in the config.yaml)",
+		"Get International Space Station": "iss : raw, location"
+	},
+	"Available query POST endpoints for /exploration in use Astronauts Research API":
+	{
+		"Create custom collection": "create : collection name",
+		"Drop custom collection": "drop : collection name",
+		"Get actual data from the FTP-Server": "email : test@test.com & file : actual_all_astronauts, actual_iss_astronauts, actual_spacedevs_astronauts"
+	}
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="74efa3e7-c43d-4178-88ed-5265dfa28b44" is="#[MunitTools::equalTo(vars.o)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="astronauts-database-delete-collection-and-data-from-database-test" doc:id="d2d5dfec-d7a6-4178-83db-77f0a9420b66" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="d8b0a3e9-50cb-400e-a30d-2166681909ee" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="r" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="af9987a7-5972-42c4-970c-a43003a4d8dc" processor="mongo:drop-database">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2f3c9a4c-a195-48d4-8027-7dfa85fb3720" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="fee1b832-9ceb-4d42-abb5-bc67dd29e281" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{drop:"database"}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to delete-collection-and-data-from-database" doc:id="acc83aa6-7f69-45a6-b36c-0b70e901fc0d" name="delete-collection-and-data-from-database"/>
+			<ee:transform doc:name="Transform Message" doc:id="c3688c3f-556a-415f-a321-b2143e008bcd" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="o" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="42a27687-bd70-4032-a968-75beac1a974b" is="#[MunitTools::equalTo(vars.o)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="astronauts-collection-delete-collection-and-data-from-database-test" doc:id="54b3ac33-59d9-44c1-becd-89ed63817b81" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="93170347-54b3-4168-a33d-76a7d3401dad" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="r" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="5f3fee8c-6bbf-46fe-89f0-ae9ea08e48af" processor="mongo:drop-collection">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d07b89a6-2c01-450d-bf15-766d74a05bc9" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="c9b832d9-83fc-4677-b404-ff3bcb324197" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{drop:"collection"}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to delete-collection-and-data-from-database" doc:id="d1d2cb0d-1505-4a6d-a9f7-7af3e7e6da62" name="delete-collection-and-data-from-database"/>
+			<ee:transform doc:name="Transform Message" doc:id="dcd12a55-2d9f-40eb-a661-acc2d6e8d2c6" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="o" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="361c88de-95da-447f-942c-ca25bbf04f94" is="#[MunitTools::equalTo(vars.o)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="custom-collection-delete-collection-and-data-from-database-test" doc:id="018ca655-8286-448c-a74a-fd87aa338026" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="61f68f1c-8e90-42f3-be17-b46ccb0422d4" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="r" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="34ec0090-c905-4876-b4c8-1366565dda55" processor="mongo:drop-collection">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="#[vars.drop_request]" attributeName="collectionName" />
+					<munit-tools:with-attribute whereValue="a37f8656-853d-4e3f-a2b6-efc6b04802a8" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.r]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="08336826-b5cf-4650-a5ae-c1d45068c7c1" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{drop:"testCollection"}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to delete-collection-and-data-from-database" doc:id="989b2f47-c9f8-4f12-88b8-25872df9810f" name="delete-collection-and-data-from-database"/>
+			<ee:transform doc:name="Transform Message" doc:id="804f17e8-8ce0-43bf-a312-408da57ea0de" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="o" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="5afac30f-65e7-4668-8139-ba729b01ddb5" is="#[MunitTools::equalTo(vars.o)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="default-collection-delete-collection-and-data-from-database-test" doc:id="36051a86-c3c0-4ce0-a56e-3b4f49f29125" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="4df87abe-b0e7-4144-bbe3-da3cc39d409b" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="r" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"GitHub Project": "https://github.com/merisen/astronauts-exploration-api",
+	"GitHub Wiki": "https://github.com/merisen/astronauts-exploration-api/wiki",
+	Authors: "Viktor Duda, Roman Skaskiv",
+	"Available query endpoints for /exploration in use Astronauts Research API":
+	{
+		"Get Help page": "help : info",
+		"Display number of requests": "data-count : 12",
+		"Get Astronauts": "astronauts : all, spacedevs, iss, dump(change path in the config.yaml)",
+		"Get International Space Station": "iss : raw, location"
+	},
+	"Available query POST endpoints for /exploration in use Astronauts Research API":
+	{
+		"Create custom collection": "create : collection name",
+		"Drop custom collection": "drop : collection name",
+		"Get actual data from the FTP-Server": "email : test@test.com & file : actual_all_astronauts, actual_iss_astronauts, actual_spacedevs_astronauts"
+	}
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="1d50c490-8784-4446-a881-2caad25fa8e3" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="b5406f5a-4c81-42ae-9628-1aaf4ac8665a" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.r]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to delete-collection-and-data-from-database" doc:id="ad1f6549-c840-4abe-92dd-af26f9d9d49b" name="delete-collection-and-data-from-database"/>
+			<ee:transform doc:name="Transform Message" doc:id="c2a32dc6-0519-41b8-9d9c-d4dce18a61b1" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="o" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"GitHub Project": "https://github.com/merisen/astronauts-exploration-api",
+	"GitHub Wiki": "https://github.com/merisen/astronauts-exploration-api/wiki",
+	Authors: "Viktor Duda, Roman Skaskiv",
+	"Available query endpoints for /exploration in use Astronauts Research API":
+	{
+		"Get Help page": "help : info",
+		"Display number of requests": "data-count : 12",
+		"Get Astronauts": "astronauts : all, spacedevs, iss, dump(change path in the config.yaml)",
+		"Get International Space Station": "iss : raw, location"
+	},
+	"Available query POST endpoints for /exploration in use Astronauts Research API":
+	{
+		"Create custom collection": "create : collection name",
+		"Drop custom collection": "drop : collection name",
+		"Get actual data from the FTP-Server": "email : test@test.com & file : actual_all_astronauts, actual_iss_astronauts, actual_spacedevs_astronauts"
+	}
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="0c3646a4-16bb-450d-aa0b-9e2d071ecc12" is="#[MunitTools::equalTo(vars.o)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="create-custom-collection-test" doc:id="937d2e6c-155e-43a1-be94-b827f5214191" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="4094c416-a9b0-4ccb-b996-0fa0289431d7" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="r" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="2b888722-543e-43c6-a389-2e8cf5dc358c" processor="mongo:create-collection">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="4b0c32d0-9ace-4028-a4b2-ac3e0cfb780c" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="#[vars.create]" attributeName="collectionName" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.r]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="1d189ee3-dc6d-453c-9da6-50c9f3fff8a8" cloneOriginalEvent="true">
+				<munit:attributes value='#[queryParams:{create:"test1"}]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to create-custom-collection" doc:id="5186ffac-7a50-486f-b3cf-e643fc640206" name="create-custom-collection"/>
+			<ee:transform doc:name="Transform Message" doc:id="f611ca73-1c91-4365-b70f-89087f64214d" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="o" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="76409c22-013d-43bd-a1be-0fe0f3deb757" is="#[MunitTools::equalTo(vars.o)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="null-create-custom-collection-test" doc:id="d09dd0ad-6613-4547-9a0c-95d1c57d4db0" description="Test">
+		<munit:behavior >
+			<ee:transform doc:name="Transform Message" doc:id="359b2496-7fa5-4f9d-9268-760dcc5aca87" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="r" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"GitHub Project": "https://github.com/merisen/astronauts-exploration-api",
+	"GitHub Wiki": "https://github.com/merisen/astronauts-exploration-api/wiki",
+	Authors: "Viktor Duda, Roman Skaskiv",
+	"Available query endpoints for /exploration in use Astronauts Research API":
+	{
+		"Get Help page": "help : info",
+		"Display number of requests": "data-count : 12",
+		"Get Astronauts": "astronauts : all, spacedevs, iss, dump(change path in the config.yaml)",
+		"Get International Space Station": "iss : raw, location"
+	},
+	"Available query POST endpoints for /exploration in use Astronauts Research API":
+	{
+		"Create custom collection": "create : collection name",
+		"Drop custom collection": "drop : collection name",
+		"Get actual data from the FTP-Server": "email : test@test.com & file : actual_all_astronauts, actual_iss_astronauts, actual_spacedevs_astronauts"
+	}
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="cab8e358-15b4-4201-a15b-37cf97494c7b" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="a9fba0e5-3433-45b7-b142-fb849fe3a17b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[vars.r]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to create-custom-collection" doc:id="280eca77-46de-4fdf-8c02-66323d0b5134" name="create-custom-collection"/>
+			<ee:transform doc:name="Transform Message" doc:id="cbf895ae-528b-4a58-a422-6d9128279391" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="o" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"GitHub Project": "https://github.com/merisen/astronauts-exploration-api",
+	"GitHub Wiki": "https://github.com/merisen/astronauts-exploration-api/wiki",
+	Authors: "Viktor Duda, Roman Skaskiv",
+	"Available query endpoints for /exploration in use Astronauts Research API":
+	{
+		"Get Help page": "help : info",
+		"Display number of requests": "data-count : 12",
+		"Get Astronauts": "astronauts : all, spacedevs, iss, dump(change path in the config.yaml)",
+		"Get International Space Station": "iss : raw, location"
+	},
+	"Available query POST endpoints for /exploration in use Astronauts Research API":
+	{
+		"Create custom collection": "create : collection name",
+		"Drop custom collection": "drop : collection name",
+		"Get actual data from the FTP-Server": "email : test@test.com & file : actual_all_astronauts, actual_iss_astronauts, actual_spacedevs_astronauts"
+	}
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="07d7228c-b8fc-41d2-9d19-2ea869834142" is="#[MunitTools::equalTo(vars.o)]" expression="#[payload]"/>
+		</munit:validation>
+	</munit:test>
+
+</mule>

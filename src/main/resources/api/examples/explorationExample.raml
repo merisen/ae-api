@@ -1,0 +1,16 @@
+#%RAML 1.0 NamedExample
+
+value:
+-
+  GitHub Project: "https://github.com/merisen/astronauts-exploration-api"
+  GitHub Wiki: "https://github.com/merisen/astronauts-exploration-api/wiki"
+  Authors: "Viktor Duda, Roman Skaskiv"
+  Available query endpoints for /exploration in use Astronauts Research API:
+    Get Help page: "help : info"
+    Display number of requests: "data-count : 12"
+    Get Astronauts: "astronauts : all, spacedevs, iss, dump(change path in the config.yaml)"
+    Get International Space Station: "iss : raw, location"
+  Available query POST endpoints for /exploration in use Astronauts Research API:
+    Create custom collection: "create : collection name"
+    Drop custom collection: "drop : collection name"
+    Get actual data from the FTP-Server: "email : test@test.com & file : actual_all_astronauts, actual_iss_astronauts, actual_spacedevs_astronauts"

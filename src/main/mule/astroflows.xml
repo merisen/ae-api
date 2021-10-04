@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:gmail="http://www.mulesoft.org/schema/mule/gmail"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp" xmlns:telegram="http://www.mulesoft.org/schema/mule/telegram" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:google-maps="http://www.mulesoft.org/schema/mule/google-maps" xmlns:mongo="http://www.mulesoft.org/schema/mule/mongo" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mongo/current/mule-mongo.xsd
+http://www.mulesoft.org/schema/mule/google-maps http://www.mulesoft.org/schema/mule/google-maps/current/mule-google-maps.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/telegram http://www.mulesoft.org/schema/mule/telegram/current/mule-telegram.xsd
+http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/gmail http://www.mulesoft.org/schema/mule/gmail/current/mule-gmail.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<sub-flow name="check-astronauts-collection" doc:id="4b17b2e3-f3bc-43ac-9c0c-34ac5ded9a08" >
+		<flow-ref doc:name="log-at-start" doc:id="e0eaa579-11a5-47f6-a52d-e4dd524f9bc7" name="log-at-start"/>
+		<mongo:collection-exists collectionName="astronauts" doc:name="astronauts-collection" doc:id="f1406926-fd41-46a1-85d6-f3ee2cce3942" config-ref="ASTRONAUTS_TABLE_CONNECTION" target="astronauts-collection"/>
+		<choice doc:name="Choice" doc:id="6c90fc05-61e1-4d95-b3b6-efb477717b30" >
+			<when expression='#[not vars."astronauts-collection"]'>
+				<mongo:create-collection doc:name="create-astronauts-collection" doc:id="d9fc60df-e164-4b39-8f1d-f28fa3d5502d" config-ref="ASTRONAUTS_TABLE_CONNECTION" collectionName="astronauts"/>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="collection-astronauts-exist" doc:id="dccde4af-deb1-47ee-86a8-b76d346905ce" message="#[&quot;Collection 'astronauts' exist!&quot;]"/>
+			</otherwise>
+		</choice>
+		<flow-ref doc:name="log-at-exit" doc:id="ea5e892f-364e-40fc-a45b-5f61f1ae2ce4" name="log-at-exit"/>
+	</sub-flow>
+	<sub-flow name="create-custom-collection" doc:id="4e3482f6-291e-498e-84de-c060789390ce" >
+		<flow-ref doc:name="log-at-start" doc:id="0eb25cb6-3cec-4af1-b9f0-5fca089fde17" name="log-at-start"/>
+		<flow-ref doc:name="exploration-post-vars" doc:id="09a14234-d8c9-4f4e-a054-9444f5212ac9" name="exploration-post-vars"/>
+		<choice doc:name="Choice" doc:id="2a7d5e6a-4128-4b1e-9b42-0ce2f2af5314" >
+			<when expression="#[vars.create != null]">
+				<mongo:create-collection doc:name="create-custom-collection" doc:id="4b0c32d0-9ace-4028-a4b2-ac3e0cfb780c" config-ref="ASTRONAUTS_TABLE_CONNECTION" collectionName="#[vars.create]" />
+				<ee:transform doc:name="message-sent-success" doc:id="830466de-6241-4f66-a5d0-22e8553c2836">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<validation:is-not-null doc:name="Is not null" doc:id="ab949e62-5545-487a-a629-8ba1c9593349" value="#[payload]" message="${validation.collectionEmpty}">
+					<error-mapping sourceType="VALIDATION:NULL" targetType="APP:CREATE_CUSTOM_COLLECTION" />
+				</validation:is-not-null>
+			</when>
+			<otherwise>
+				<flow-ref doc:name="send-help-variable-name" doc:id="a9fba0e5-3433-45b7-b142-fb849fe3a17b" name="help-var" />
+			</otherwise>
+		</choice>
+		<flow-ref doc:name="log-at-exit" doc:id="dea02bfd-eaa7-4b2c-b34e-ca8ea3af8c6e" name="log-at-exit"/>
+	</sub-flow>
+	<sub-flow name="delete-collection-and-data-from-database" doc:id="335df96e-b34e-47d2-a151-82643bd94ff6" >
+		<flow-ref doc:name="log-at-start" doc:id="ae520b79-d814-42da-adb3-bf2ee2b5b154" name="log-at-start"/>
+		<flow-ref doc:name="exploration-post-vars" doc:id="d2e6fe5d-38a7-4485-8146-3abcebc375d6" name="exploration-post-vars"/>
+		<choice doc:name="Choice" doc:id="17c5d676-07cc-420d-a091-dfba8a807ed1" >
+			<when expression='#[vars.drop_request == "database"]'>
+				<mongo:drop-database databaseName="astronauts" doc:name="delete-astronauts-database" doc:id="2f3c9a4c-a195-48d4-8027-7dfa85fb3720" config-ref="ASTRONAUTS_TABLE_CONNECTION"/>
+				<ee:transform doc:name="message-sent-success" doc:id="22970772-7699-41a0-887b-109e93f5839f">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<validation:is-not-null doc:name="Is not null" doc:id="24c1084b-b8b8-4af8-b24f-3232ed198ef0" value="#[payload]" message="${validation.collectionEmpty}">
+					<error-mapping sourceType="VALIDATION:NULL" targetType="APP:DELETE_ASTRONAUTS_DATABASE" />
+				</validation:is-not-null>
+			</when>
+			<when expression='#[vars.drop_request == "collection"]'>
+				<mongo:drop-collection collectionName="astronauts" doc:name="delete-astronauts-collection" doc:id="d07b89a6-2c01-450d-bf15-766d74a05bc9" config-ref="ASTRONAUTS_TABLE_CONNECTION"/>
+				<ee:transform doc:name="message-sent-success" doc:id="e5c16d7b-096b-4901-bd4a-4ec476dce349">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<validation:is-not-null doc:name="Is not null" doc:id="c2dfd276-55b4-4778-9d05-0df08eb2b247" value="#[payload]" message="${validation.collectionEmpty}">
+					<error-mapping sourceType="VALIDATION:NULL" targetType="APP:DELETE_ASTRONAUTS_COLLECTION" />
+				</validation:is-not-null>
+			</when>
+			<when expression="#[vars.drop_request != null]">
+				<mongo:drop-collection collectionName="#[vars.drop_request]" doc:name="drop-custom-collection" doc:id="a37f8656-853d-4e3f-a2b6-efc6b04802a8" config-ref="ASTRONAUTS_TABLE_CONNECTION"/>
+				<ee:transform doc:name="message-sent-success" doc:id="f845bfa2-030a-4320-95cb-0939d4dfde56">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<validation:is-not-null doc:name="Is not null" doc:id="7fa6df91-bf4f-47f5-8b66-d31b83efe0c3" value="#[payload]" message="${validation.collectionEmpty}">
+					<error-mapping sourceType="VALIDATION:NULL" targetType="APP:DELETE_CUSTOM_COLLECTION" />
+				</validation:is-not-null>
+			</when>
+			<otherwise >
+				<flow-ref doc:name="help-output-message" doc:id="b5406f5a-4c81-42ae-9628-1aaf4ac8665a" name="help-var"/>
+			</otherwise>
+		</choice>
+		<flow-ref doc:name="log-at-exit" doc:id="58154353-212a-4ea8-adbd-92a457c3cc86" name="log-at-exit"/>
+	</sub-flow>
+	<sub-flow name="actual-data-from-ftp-send-by-email" doc:id="b783097a-5565-4e5c-8cd6-8c7c1b3a377a">
+		<flow-ref doc:name="log-at-start" doc:id="8b8959bf-c819-4244-90e7-44d47198cd7f" name="log-at-start" />
+		<flow-ref doc:name="exploration-post-vars" doc:id="c2568a35-e974-4e08-a111-800a29db5596" name="exploration-post-vars" />
+		<choice doc:name="Choice" doc:id="525a7fe5-cfd0-4cd4-ab4d-cf9281d38c87">
+			<when expression='#[vars.email != null and vars.file == "actual_all_astronauts"]'>
+				<ftp:read doc:name="read-data-from-file-in-the-ftp-server" doc:id="741cef47-32fd-49f0-bc0c-aa09eb8b3815" config-ref="ASTRONAUTS_PATH_FTP_CONNECTOR" path="${ftp.all_path}" />
+				<email:send doc:name="send-payload-to-the-email-if-user-want" doc:id="e19e62b2-5708-4dad-a35f-b851c8b19902" fromAddress="${mail.user}" subject="${mail.subject}" config-ref="Email_SMTP">
+					<email:to-addresses>
+						<email:to-address value="#[vars.email]" />
+					</email:to-addresses>
+					<email:attachments><![CDATA[#[payload]]]></email:attachments>
+				</email:send>
+				<ee:transform doc:name="message-sent-success" doc:id="687de3e3-45c9-452d-bbe0-b7d2bd94d807">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<validation:is-not-null doc:name="Is not null" doc:id="47a9b53b-810c-4ecc-9ea5-5b84f8583ade" value="#[payload]" message="${validation.collectionEmpty}">
+					<error-mapping sourceType="VALIDATION:NULL" targetType="APP:ALL_ASTRONAUTS_EMAIL_EMPTY_COLLECTION" />
+				</validation:is-not-null>
+			</when>
+			<when expression='#[vars.email != null and vars.file == "actual_spacedevs_astronauts"]'>
+				<ftp:read doc:name="read-data-from-file-in-the-ftp-server" doc:id="2d89f8a6-9e17-41d8-a62e-53f2a538cdc6" config-ref="ASTRONAUTS_PATH_FTP_CONNECTOR" path="${ftp.spacedevs_path}" />
+				<email:send doc:name="send-payload-to-the-email-if-user-want" doc:id="86dbc191-9bae-4ea2-89c8-f36fd2761dba" config-ref="Email_SMTP" fromAddress="${mail.user}" subject="${mail.subject}">
+					<email:to-addresses>
+						<email:to-address value="#[vars.email]" />
+					</email:to-addresses>
+				</email:send>
+				<ee:transform doc:name="message-sent-success" doc:id="ccac2e03-f2e0-4aee-ab89-aba328e2a644">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<validation:is-not-null doc:name="Is not null" doc:id="08a3b45f-1d50-4b06-8f4e-66b3fc7d0ced" value="#[payload]" message="${validation.collectionEmpty}">
+					<error-mapping sourceType="VALIDATION:NULL" targetType="APP:SPACEDEVS_ASTRONAUTS_EMAIL_EMPTY_COLLECTION" />
+				</validation:is-not-null>
+			</when>
+			<when expression='#[vars.email != null and vars.file == "actual_iss_astronauts"]'>
+				<ftp:read doc:name="read-data-from-file-in-the-ftp-server" doc:id="29e643a7-c95e-4e37-a229-f5f64065a82b" config-ref="ASTRONAUTS_PATH_FTP_CONNECTOR" path="${ftp.iss_path}" />
+				<email:send doc:name="send-payload-to-the-email-if-user-want" doc:id="3a71ab63-712f-48f3-87a8-74d4e0ee74b5" config-ref="Email_SMTP" fromAddress="${mail.user}" subject="${mail.subject}">
+					<email:to-addresses>
+						<email:to-address value="#[vars.email]" />
+					</email:to-addresses>
+				</email:send>
+				<ee:transform doc:name="message-sent-success" doc:id="30c12f53-c764-48cd-a8d5-80af8a2ef79d">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<validation:is-not-null doc:name="Is not null" doc:id="8bab2064-8919-46a1-9af0-8f2636fb28b9" value="#[payload]" message="${validation.collectionEmpty}">
+					<error-mapping sourceType="VALIDATION:NULL" targetType="APP:ISS_ASTRONAUTS_EMAIL_EMPTY_COLLECTION" />
+				</validation:is-not-null>
+			</when>
+			<otherwise>
+				<flow-ref doc:name="help-output-message" doc:id="0c506444-4bdd-4d10-9056-627254482ae0" name="help-var" />
+			</otherwise>
+		</choice>
+		<flow-ref doc:name="log-at-exit" doc:id="bc4076fd-fba4-478b-a4e3-7eae686b69cf" name="log-at-exit"/>
+	</sub-flow>
+	<sub-flow name="dump-collection-from-mongodb" doc:id="f97809fa-bc45-447c-a4b2-9ef9c947bc47" >
+		<flow-ref doc:name="log-at-start" doc:id="229d6087-ab64-474c-b428-4e2ca81cda05" name="log-at-start"/>
+		<flow-ref doc:name="exploration-vars" doc:id="2fe8b63e-c26d-4d82-a629-118010dd78e2" name="exploration-vars"/>
+		<choice doc:name="Choice" doc:id="7cc8e69b-245a-4aa7-8c33-681a8a43bf71" >
+			<when expression='#[vars.dump_request == "astronauts"]'>
+				<mongo:dump doc:name="dump-all-data-from-astronauts-table" doc:id="0d09094c-eb26-4d6e-934b-0c3220f045d3" config-ref="ASTRONAUTS_TABLE_CONNECTION" outputDirectory="${mongodb.dump}" target="dump-data"/>
+				<ee:transform doc:name="dump-success" doc:id="cd47b235-a7c4-4138-ac4b-63a78b9bdf61">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Status: "Success!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<validation:is-not-null doc:name="Is not null" doc:id="dc1104ce-cde8-4e39-a01c-dc8ca9ba70f3" value="#[payload]" message="${validation.collectionEmpty}">
+					<error-mapping sourceType="VALIDATION:NULL" targetType="APP:DUMP_EMPTY_COLLECTION" />
+				</validation:is-not-null>
+			</when>
+			<otherwise >
+				<flow-ref doc:name="help-output-message" doc:id="7ff42a85-9666-4f1f-afb0-e9a5d6ee03cd" name="help-var"/>
+			</otherwise>
+		</choice>
+		<flow-ref doc:name="log-at-exit" doc:id="62299b56-c061-4c82-96c7-08c64618392c" name="log-at-exit"/>
+	</sub-flow>
+	<sub-flow name="astronauts-request-transform-message" doc:id="9c07ceee-d3b0-4bf8-91fa-2c638ddb1ee6" >
+		<flow-ref doc:name="exploration-vars" doc:id="2fc0a685-873f-4dc0-ad04-b72fcd421eb6" name="exploration-vars"/>
+		<http:request method="GET" doc:name="request-to-astronauts-research-api" doc:id="4015cea4-b186-4187-ad17-9ee3f345293d" url="${astronauts-research.host}">
+			<http:query-params ><![CDATA[#[{
+	limit: vars.data_count,
+	mode: vars.mode,
+	astronauts: vars.astronauts
+}]]]></http:query-params>
+		</http:request>
+		<choice doc:name="Choice" doc:id="c14a1b14-b602-41a6-b7ed-c90ecf485cf5" >
+			<when expression='#[vars.astronauts == "iss"]'>
+				<ee:transform doc:name="iss-astronauts" doc:id="de34920d-3ec9-4d2e-82eb-ed083a408fdd" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+people: payload.people map ( person , indexOfPerson ) -> {
+	name: person.name,
+	craft: person.craft
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<validation:is-not-null doc:name="Is not null" doc:id="92eee85f-c014-4ed4-93ee-95c53c70c855" value="#[payload]" message="${validation.collectionEmpty}">
+					<error-mapping sourceType="VALIDATION:NULL" targetType="APP:EMPTY_ISS_REQUEST_COLLECTION" />
+				</validation:is-not-null>
+			</when>
+			<when expression='#[vars.astronauts == "spacedevs"]'>
+				<choice doc:name="Choice" doc:id="3a2bf325-a07e-4ece-a82a-ac91f6b9d55f">
+					<when expression='#[vars.mode != null]'>
+						<logger level="INFO" doc:name="log-detailed-mode" doc:id="1a036c59-fcf7-4048-bf46-ef6ee4aee16c" message='#["Detailed mode: use"]'/>
+					</when>
+					<otherwise >
+						<ee:transform doc:name="spacedevs-astronauts" doc:id="7ba44d6e-d0e6-4e2e-9de3-8d1a2b2587d8">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	results: payload.results map ( result , indexOfResult ) -> {
+		id: result.id,
+		name: result.name,
+		date_of_birth: result.date_of_birth,
+		nationality: result.nationality,
+		wiki: result.wiki,
+		agency: {
+			name: result.agency.name
+		},
+		last_flight: result.last_flight,
+		first_flight: result.first_flight
+	}
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+					</otherwise>
+				</choice>
+				<validation:is-not-null doc:name="Is not null" doc:id="7f8d80f4-719c-47b1-8fe0-ad0a3db10a50" value="#[payload]" message="${validation.collectionEmpty}">
+					<error-mapping sourceType="VALIDATION:NULL" targetType="APP:EMPTY_SPACEDEVS_COLLECTION" />
+				</validation:is-not-null>
+			</when>
+			<when expression='#[vars.astronauts == "all"]'>
+				<http:request method="GET" doc:name="request-to-astronauts" doc:id="d1f96d28-6926-46bf-86e4-0b7d0da8440f" url="${astronauts-research.host}">
+							<http:query-params><![CDATA[#[{
+	limit: vars.data_count,
+	astronauts: vars.astronauts
+}]]]></http:query-params>
+						</http:request>
+				<validation:is-not-null doc:name="Is not null" doc:id="8c8f63eb-aa8d-4301-a1e5-49f6f5915681" value="#[payload]" message="${validation.collectionEmpty}">
+					<error-mapping sourceType="VALIDATION:NULL" targetType="APP:EMPTY_ALL_ASTRONAUTS_COLLECTION" />
+				</validation:is-not-null>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="astronauts-research-api-help-message" doc:id="a5ac0cdf-fe50-410f-8b38-c5383d6779df" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "GitHub": "All updated information and API you cand find here: https://github.com/merisen/astronaut-research-api",
+    "QueryList": {
+        "GetAllAstronauts": "astronauts : all",
+        "GetAstronautsOnlyFromTheSpaceDevs": "astronauts : spacedevs",
+        "GetAstronautsOnlyFromISS": "astronauts : iss",
+        "FilterSpaceDevsAstronautsByName": "astronautName : Marc+Garneau",
+        "FilterSpaceDevsAstronautsByNationality": "nationality : Canadian",
+        "FilterISSAstronautsByName": "issName : Pyotr+Dubrov",
+        "FilterISSAstronautsByCraft": "craft : Tiangong",
+        "GetThisHelpPage": "help : info"
+    }
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<flow-ref doc:name="log-at-exit" doc:id="4c8b67ba-dd17-428a-8182-1e2913b4ead7" name="log-at-exit"/>
+	</sub-flow>
+	<sub-flow name="astronauts-exploration" doc:id="c50e0df4-7926-4a6b-b703-e5a5bff16d6a" >
+		<flow-ref doc:name="log-at-start" doc:id="4565cddd-b28d-4046-9b14-43ff2ff69e2f" name="log-at-start"/>
+		<flow-ref doc:name="check-astronauts-collection" doc:id="a2799af5-7d3a-43b7-87f1-d4bbe31eded5" name="check-astronauts-collection"/>
+		<flow-ref doc:name="exploration-vars" doc:id="ece77920-6aeb-485b-9cb7-fdb2117ad561" name="exploration-vars"/>
+		<choice doc:name="Choice" doc:id="a271af23-1c16-46c6-b11d-67faa79d7c68" >
+			<when expression='#[vars.astronauts == "all"]'>
+				<flow-ref doc:name="astronauts-request-transform-message" doc:id="32c85a18-a3f9-44b7-a878-8471b1bf57a5" name="astronauts-request-transform-message"/>
+				<ee:transform doc:name="json-array-to-the-json" doc:id="493f1a56-35b1-4222-9acd-38bb78aeb1db">
+					<ee:message>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="output" ><![CDATA[%dw 2.0
+output application/json
+---
+{(payload)}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<ftp:write doc:name="set-actual-astronauts-data" doc:id="6e925cd1-a84d-447f-bdd5-6d80f983eb22" config-ref="ASTRONAUTS_PATH_FTP_CONNECTOR" path="${ftp.all_path}">
+							<ftp:content><![CDATA[#[vars."output"]]]></ftp:content>
+						</ftp:write>
+				<mongo:insert-document doc:name="add-data-to-the-database" doc:id="e333b6dd-6b1d-4260-a047-0b3ab1d4a48f" config-ref="ASTRONAUTS_TABLE_CONNECTION" collectionName="astronauts">
+					<mongo:document><![CDATA[#[vars."output"]]]></mongo:document>
+				</mongo:insert-document>
+				<ee:transform doc:name="transform-output" doc:id="a889119e-7e3e-464d-8395-d414d91bcad5">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	results: payload.results map ( result , indexOfResult ) -> {
+		id: result.id,
+		name: result.name,
+		date_of_birth: result.date_of_birth,
+		nationality: result.nationality,
+		wiki: result.wiki,
+		agency: result.agency,
+		last_flight: result.last_flight,
+		first_flight: result.first_flight
+	},
+	people: payload.people map ( person , indexOfPerson ) -> {
+		craft: person.craft,
+		name: person.name
+	}
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[vars.astronauts == "spacedevs"]'>
+				<flow-ref doc:name="astronauts-request-transform-message" doc:id="3842ddc9-84db-4d7b-b988-2b1883340be5" name="astronauts-request-transform-message"/>
+				<ee:transform doc:name="json-array-to-the-json" doc:id="61f87b5d-d02e-4528-b532-e15d9333a5c4">
+					<ee:message>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="output" ><![CDATA[%dw 2.0
+output application/json
+---
+{(payload)}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<ftp:write doc:name="set-actual-spacedevs-data" doc:id="b65bc1b3-8340-47be-a237-e73c1b88f6bc" config-ref="ASTRONAUTS_PATH_FTP_CONNECTOR" path="${ftp.spacedevs_path}">
+							<ftp:content><![CDATA[#[vars."output"]]]></ftp:content>
+						</ftp:write>
+				<mongo:insert-document collectionName="astronauts" doc:name="add-data-to-the-database" doc:id="4e130673-134c-4e88-899c-caaa3a0dd448" config-ref="ASTRONAUTS_TABLE_CONNECTION">
+					<mongo:document><![CDATA[#[vars."output"]]]></mongo:document>
+				</mongo:insert-document>
+				<choice doc:name="Choice" doc:id="bdcab424-5451-40a5-92dc-135e23cf8f4c">
+					<when expression="#[vars.mode != null]">
+						<logger level="INFO" doc:name="log-at-mode" doc:id="42f8c401-35ed-475e-ae6a-efdb4510453f" message='#["Mode query != null"]'/>
+					</when>
+					<otherwise >
+						<ee:transform doc:name="transform-output" doc:id="1e34278f-d706-487a-9253-063db58c5448">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	results: payload.results map ( result , indexOfResult ) -> {
+		id: result.id,
+		name: result.name,
+		date_of_birth: result.date_of_birth,
+		nationality: result.nationality,
+		wiki: result.wiki,
+		agency: {
+			name: result.agency.name
+		},
+		last_flight: result.last_flight,
+		first_flight: result.first_flight
+	}
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+					</otherwise>
+				</choice>
+			</when>
+			<when expression='#[vars.astronauts == "iss"]'>
+				<flow-ref doc:name="astronauts-request-transform-message" doc:id="9a55248c-c7f9-4d96-bcc7-958d51521986" name="astronauts-request-transform-message"/>
+				<ee:transform doc:name="json-array-to-the-json" doc:id="56b30ee2-0be6-4258-ba14-47c3a7d71e60">
+					<ee:message>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="output" ><![CDATA[%dw 2.0
+output application/json
+---
+{(payload)}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<ftp:write doc:name="set-actual-iss-data" doc:id="0ff40af9-469c-4690-8456-8c217f7494ed" config-ref="ASTRONAUTS_PATH_FTP_CONNECTOR" path="${ftp.iss_path}">
+							<ftp:content><![CDATA[#[vars."output"]]]></ftp:content>
+						</ftp:write>
+				<mongo:insert-document doc:name="add-data-to-the-database" doc:id="3e9f8486-fd73-4865-8697-f1bbeaf827af" config-ref="ASTRONAUTS_TABLE_CONNECTION" collectionName="astronauts">
+					<mongo:document><![CDATA[#[vars."output"]]]></mongo:document>
+				</mongo:insert-document>
+				<ee:transform doc:name="transform-output" doc:id="5a8eda9c-4742-4014-b2ff-2ae4b915f1ba" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+people: payload.people map ( person , indexOfPerson ) -> {
+	name: person.name,
+	craft: person.craft
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[vars.dump_request == "astronauts"]'>
+				<flow-ref doc:name="dump-collection-from-mongodb" doc:id="31a1e978-7ac1-4ac3-b372-95e4850961d5" name="dump-collection-from-mongodb"/>
+			</when>
+			<otherwise >
+				<flow-ref doc:name="info-help-output" doc:id="cb1b24bc-4f70-48a3-b29c-0f6380109a50" name="help-var"/>
+			</otherwise>
+		</choice>
+		<flow-ref doc:name="log-at-exit" doc:id="a1a6c3c6-316c-4b66-ae04-bf04b4b264ab" name="log-at-exit"/>
+	</sub-flow>
+</mule>

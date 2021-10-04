@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:mongo="http://www.mulesoft.org/schema/mule/mongo" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mongo/current/mule-mongo.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<sub-flow name="exploration-get" doc:id="976fd441-b4ce-4a12-b56a-21dc9dbd74bd" >
+		<flow-ref doc:name="log-at-start" doc:id="6e56d153-0407-4535-9879-a0f91db3c9c2" name="log-at-start"/>
+		<flow-ref doc:name="exploration-vars" doc:id="85281843-e7a8-4f68-a506-8360db880c71" name="exploration-vars" />
+		<choice doc:name="Choice" doc:id="635f36ba-02bb-4714-aa10-5d3ab2bc305d" >
+			<when expression='#[vars.help != null or &#10;vars.astronauts != null or &#10;vars.data_count != null or&#10;vars.iss != null]'>
+				<flow-ref doc:name="astronauts-exploration" doc:id="82c7d5a2-7880-4be5-afac-dcf709914447" name="astronauts-exploration" />
+			</when>
+			<otherwise>
+				<flow-ref doc:name="info-help-output" doc:id="770c8009-4fe7-4df3-a4f5-b75e4409f108" name="help-var"/>
+			</otherwise>
+		</choice>
+		<flow-ref doc:name="log-at-exit" doc:id="6711123b-eb85-4b44-aff1-7dff3d2433c6" name="log-at-exit"/>
+	</sub-flow>
+	<sub-flow name="exploration-post" doc:id="8f832f6d-7cea-4f8c-a5ce-dc2c3a83df17" >
+		<flow-ref doc:name="log-at-start" doc:id="b4ca7a34-d649-42ad-9c82-0c1e2d95c83c" name="log-at-start"/>
+		<set-variable value='#[message.attributes.queryParams is ""]' doc:name="request-type" doc:id="890156cf-fe48-48f2-a3a5-4b60750032cc" variableName="requestType"/>
+		<choice doc:name="Choice" doc:id="951d58b6-da81-42b9-a287-417c7246f9e0" >
+			<when expression="#[vars.requestType != null]">
+				<flow-ref doc:name="exploration-post-vars" doc:id="8871ff36-91bd-4fd9-ab5a-c3ce88bfaeca" name="exploration-post-vars"/>
+				<choice doc:name="Choice" doc:id="76f01689-6ac6-4764-b2ed-0049bb829a52" >
+					<when expression="#[vars.drop_request != null]">
+						<flow-ref doc:name="delete-collection-and-data-from-database" doc:id="13b66d3d-2aef-4b5c-847f-f78deaee30d6" name="delete-collection-and-data-from-database"/>
+					</when>
+					<when expression="#[vars.create != null]">
+						<flow-ref doc:name="create-custom-collection" doc:id="839a9761-accb-4f7a-89c7-9b858a2336cc" name="create-custom-collection"/>
+					</when>
+					<when expression="#[vars.email != null and vars.file != null]">
+						<flow-ref doc:name="data-from-collection-send-by-email" doc:id="90ae653e-a19f-4987-b5d0-91c1de3a86bd" name="actual-data-from-ftp-send-by-email"/>
+					</when>
+					<otherwise >
+						<flow-ref doc:name="info-help-output" doc:id="37bb2753-c3b0-4ce5-b7ae-46dba27bf125" name="help-var"/>
+					</otherwise>
+				</choice>
+			</when>
+			<otherwise >
+				<flow-ref doc:name="info-help-output" doc:id="dc6d90a8-7ff5-40f5-8cd6-e59fe2f77aa3" name="help-var"/>
+			</otherwise>
+		</choice>
+	</sub-flow>
+</mule>

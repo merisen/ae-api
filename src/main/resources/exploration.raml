@@ -1,0 +1,52 @@
+#%RAML 1.0
+title: Astronauts Exploration API
+description: AE combine information from two external API - Astronauts Research & Expeditions
+  
+/exploration:
+  get:
+    description: Retrieve data from query types
+    queryParameters:
+      # Use of 'data-count' is necessary in order to set the number of displayed requests
+      data-count:
+        required: false
+      # Use of 'help' is necessary in order to call the page using the API, two options - web page or json text
+      help:
+        required: false
+      # Use of 'astronauts' is necessary in order for the user to get astronauts with SpaceDevs & ISS - all, spacedevs, iss
+      astronauts:
+        required: false
+      # Use of 'iss' is needed to get the actual location of the ISS - raw, link
+      iss:
+        required: false
+      # Use 'expedition' to get all space expeditions
+      expedition:
+        required: false
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            examples:
+              output: !include api/examples/explorationExample.raml
+  post:
+    description: Send data from query to the API
+    queryParameters:
+      # Use of 'drop' for any drop functions in the MongoDB - database, collection
+      drop:
+        required: false
+      # Use of 'create' for any create functions in the MongoDB - database, collection, user, file, index
+      create:
+        required: false
+      # Use of 'email' for Email send data from FTP Server
+      email:
+        required: false
+      # Use of 'file' for point file in the FTP Server while we send data using email
+      file:
+        required: false
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            examples:
+              output: !include api/examples/explorationExample.raml
