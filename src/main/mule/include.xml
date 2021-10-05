@@ -29,6 +29,11 @@ http://www.mulesoft.org/schema/mule/gmail http://www.mulesoft.org/schema/mule/gm
 		<set-variable value="#[message.attributes.queryParams.email]" doc:name="email-list" doc:id="393b6107-7066-4b06-b65c-35eb08df7ae6" variableName="email" />
 		<set-variable value="#[message.attributes.queryParams.file]" doc:name="file-name" doc:id="4322627f-414f-45cb-9054-1fb67c72d119" variableName="file"/>
 	</sub-flow>
+	<sub-flow name="limit-offset-mode-vars" doc:id="593ea95c-4f18-49ce-aab2-f04162823c91" >
+		<set-variable value="#[message.attributes.queryParams.limit]" doc:name="set-limit" doc:id="caf540d2-6d09-427e-b84c-1261835fa085" variableName="limit"/>
+		<set-variable value="#[message.attributes.queryParams.offset]" doc:name="set-offset" doc:id="d02a133b-4037-4468-ab96-728a7273b8a6" variableName="offset"/>
+		<set-variable value="#[message.attributes.queryParams.mode]" doc:name="set-mode" doc:id="8f3b8384-4c61-4d57-a975-90a2fc19581d" variableName="mode"/>
+	</sub-flow>
 	<sub-flow name="help-var" doc:id="63af6c1d-1f57-4567-a7a9-56590d313fb4" >
 		<ee:transform doc:name="help-message" doc:id="aef02c94-ff42-4c5f-bbfe-6834ad16a1ea" >
 			<ee:message >

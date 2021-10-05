@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="spacedevs-request" doc:id="82015531-5a59-4a56-b0da-7b20995eb52e" >
+		<flow-ref doc:name="log-at-start" doc:id="394346d6-8884-45ec-b522-bb39db5b614a" name="log-at-start"/>
+		<flow-ref doc:name="limit-offset-mode-vars" doc:id="e42c443b-17e0-4611-8f86-f27ceaa63ba4" name="limit-offset-mode-vars"/>
+		<http:request method="GET" doc:name="spacedevs-request-with-query-params" doc:id="c6d0e86a-a7b9-43ce-98c7-0b09b295e71c" url="${host.spacedevs}">
+			<http:query-params ><![CDATA[#[{
+	limit: vars.limit,
+	offset: vars.offset,
+	mode: vars.mode
+}]]]></http:query-params>
+		</http:request>
+		<choice doc:name="Choice" doc:id="72d4ed26-c800-4e64-87df-2725bfdf459c" >
+			<when expression="#[vars.mode != null]">
+				<logger level="INFO" doc:name="detailed-mode-not-null" doc:id="88875f7e-c6e2-4a79-ada9-24a050fa008e" message="${log.detailed-mode-in-use}"/>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="filtered-output" doc:id="27f9b46e-894d-4c9b-b04c-87dd26eaf16e" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	results: payload.results map ( result , indexOfResult ) -> {
+		id: result.id,
+		name: result.name,
+		date_of_birth: result.date_of_birth,
+		nationality: result.nationality,
+		wiki: result.wiki,
+		agency: {
+			name: result.agency.name
+		},
+		last_flight: result.last_flight,
+		first_flight: result.first_flight
+	}
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<flow-ref doc:name="log-at-exit" doc:id="4b1dcbb2-70d1-4312-92d6-de6c500e9a94" name="log-at-exit"/>
+	</sub-flow>
+	<sub-flow name="international-space-station-request" doc:id="86690d4d-012f-4758-9584-d20c09540279" >
+		<flow-ref doc:name="log-at-start" doc:id="70f907a1-f288-4417-933f-cb46f3a83511" name="log-at-start"/>
+		<http:request method="GET" doc:name="international-space-station" doc:id="2ea9ca46-720e-4ee4-872a-3fb67d53045f" url="${host.iss-astronauts}"/>
+		<ee:transform doc:name="filtered-output" doc:id="48f8fbc2-1881-47b5-9fd8-c611085cdacc" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+people: payload.people map ( person , indexOfPerson ) -> {
+	name: person.name,
+	craft: person.craft
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>
