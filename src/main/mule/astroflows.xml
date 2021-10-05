@@ -80,7 +80,7 @@ output application/json
 output application/json
 ---
 {
-	Status: Mule::p('success.delete-astronauts-database-message')
+	Status: Mule::p('success.delete-astronauts-collection-message')
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
@@ -96,7 +96,7 @@ output application/json
 output application/json
 ---
 {
-	Status: Mule::p('success.delete-astronauts-database-message')
+	Status: Mule::p('success.delete-custom-collection-message')
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
@@ -128,7 +128,7 @@ output application/json
 output application/json
 ---
 {
-	Status: "Success!"
+	Status: Mule::p('success.send-astronauts-all-to-the-user-email')
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
@@ -149,7 +149,7 @@ output application/json
 output application/json
 ---
 {
-	Status: "Success!"
+	Status: Mule::p('success.send-spacedevs-astronauts-to-the-user-email')
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
@@ -170,7 +170,7 @@ output application/json
 output application/json
 ---
 {
-	Status: "Success!"
+	Status: Mule::p('success.send-iss-astronauts-to-the-user-email')
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
@@ -196,7 +196,7 @@ output application/json
 output application/json
 ---
 {
-	Status: "Success!"
+	Status: Mule::p('success.mongodb-astronauts-collection-dump')
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
@@ -239,7 +239,7 @@ people: payload.people map ( person , indexOfPerson ) -> {
 			<when expression='#[vars.astronauts == "spacedevs"]'>
 				<choice doc:name="Choice" doc:id="3a2bf325-a07e-4ece-a82a-ac91f6b9d55f">
 					<when expression='#[vars.mode != null]'>
-						<logger level="INFO" doc:name="log-detailed-mode" doc:id="1a036c59-fcf7-4048-bf46-ef6ee4aee16c" message='#["Detailed mode: use"]'/>
+						<logger level="INFO" doc:name="log-detailed-mode" doc:id="1a036c59-fcf7-4048-bf46-ef6ee4aee16c" message='${log.detailed-mode-in-use}'/>
 					</when>
 					<otherwise >
 						<ee:transform doc:name="spacedevs-astronauts" doc:id="7ba44d6e-d0e6-4e2e-9de3-8d1a2b2587d8">
@@ -372,7 +372,7 @@ output application/json
 				</mongo:insert-document>
 				<choice doc:name="Choice" doc:id="bdcab424-5451-40a5-92dc-135e23cf8f4c">
 					<when expression="#[vars.mode != null]">
-						<logger level="INFO" doc:name="log-at-mode" doc:id="42f8c401-35ed-475e-ae6a-efdb4510453f" message='#["Mode query != null"]'/>
+						<logger level="INFO" doc:name="log-at-mode" doc:id="42f8c401-35ed-475e-ae6a-efdb4510453f" message='${log.mode-query-is-not-null}'/>
 					</when>
 					<otherwise >
 						<ee:transform doc:name="transform-output" doc:id="1e34278f-d706-487a-9253-063db58c5448">
