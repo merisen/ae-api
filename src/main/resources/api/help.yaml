@@ -1,0 +1,11 @@
+help:
+  github-link: "https://github.com/merisen/ae-api"
+  github-wiki: "https://github.com/merisen/ae-api/wiki"
+  authors: "Viktor Duda, Roman Skaskiv"
+  get-help-page-manual: "help : info"
+  get-display-number-of-requests: "data-count : 12"
+  get-astronauts-query-list: "astronauts : all, spacedevs, iss, dump(change path in the config.yaml)"
+  get-international-space-station-query-list: "iss : raw, location"
+  post-create-custom-collection: "create : collection name"
+  post-drop-custom-collection: "drop : collection name"
+  post-send-data-from-the-ftp-to-the-email: "email : test@test.com & file : actual_all_astronauts, actual_iss_astronauts, actual_spacedevs_astronauts"
