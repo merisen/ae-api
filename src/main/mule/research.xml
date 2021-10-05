@@ -60,4 +60,22 @@ people: payload.people map ( person , indexOfPerson ) -> {
 			</ee:message>
 		</ee:transform>
 	</sub-flow>
+	<sub-flow name="path-validation" doc:id="0f29eaf1-b548-41dc-a7cb-f4fea8f8d069" >
+		<flow-ref doc:name="log-at-start" doc:id="581d8fd4-fc0b-4871-998a-d4ef498e1c60" name="log-at-start"/>
+		<ee:transform doc:name="path-java-validator" doc:id="187cbb16-66d1-4173-b8f5-faee92f7d322" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+import java!online::merisen::api::FileAndPathValidator
+
+var validatePath = FileAndPathValidator::validatePath(Mule::p('java-path.validation-dir'))
+---
+{
+	validate: validatePath
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="files-validation" doc:id="73139251-8015-40c6-9f91-9bcea7fd4622" />
+	<sub-flow name="files-and-path-validation-combined" doc:id="fa8a9a61-f6ae-4de7-9712-515f453ec0a1" />
 </mule>
