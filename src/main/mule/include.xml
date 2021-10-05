@@ -40,7 +40,7 @@ output application/json
 {
 	"GitHub Project": Mule::p('help.github-link'),
 	"GitHub Wiki": Mule::p('help.github-wiki'),
-	Authors: Mule::p('help.authors'),
+	"Authors": Mule::p('help.authors'),
 	"Available query endpoints for /exploration in use Astronauts Research API":
 	{
 		"Get Help page": Mule::p('help.get-help-page-manual'),
@@ -66,8 +66,23 @@ output application/json
 	"Available query POST endpoints for /exploration in use Astronauts Research API":
 	{
 		"Create custom collection": Mule::p('help.post-create-custom-collection'),
+		"Example" : {
+			"Link": Mule::p('help.post-create-custom-collection-example')
+		},
 		"Drop custom collection": Mule::p('help.post-drop-custom-collection'),
-		"Get actual data from the FTP-Server": Mule::p('help.post-send-data-from-the-ftp-to-the-email')
+		"Example" : {
+			"Link": Mule::p('help.post-drop-custom-collection-example')
+		},
+		"Get actual data from the FTP-Server": Mule::p('help.post-send-data-from-the-ftp-to-the-email'),
+		"Example" : {
+			"Link": Mule::p('help.post-send-data-from-the-ftp-to-the-email-example-all')
+		},
+		"Example" : {
+			"Link": Mule::p('help.post-send-data-from-the-ftp-to-the-email-example-spacedevs')
+		},
+		"Example" : {
+			"Link": Mule::p('help.post-send-data-from-the-ftp-to-the-email-example-iss')
+		}
 	}
 }]]></ee:set-variable>
 			</ee:variables>

@@ -1,25 +1,42 @@
+# YAML File special for help json-output in the help-var subflow
 help:
+  # GitHub links
   github-link: "https://github.com/merisen/ae-api"
   github-wiki: "https://github.com/merisen/ae-api/wiki"
   
+  # Authors
   authors: "Viktor Duda, Roman Skaskiv"
   
+  # GET 'help' request & example
   get-help-page-manual: "help : info"
-  get-help-page-manual-example: ""
+  get-help-page-manual-example: "http://localhost:8083/api/exploration?help=info"
   
+  # GET 'data-count' request & example
   get-display-number-of-requests: "data-count : 12"
-  get-display-number-of-requests-example: ""
+  get-display-number-of-requests-example: "http://localhost:8083/api/exploration?astronauts=spacedevs&data_count=12"
   
+  # GET 'astronauts' request & example
   get-astronauts-query-list: "astronauts : all, spacedevs, iss, dump(change path in the config.yaml)"
-  get-astronauts-query-list-example-all: ""
-  get-astronauts-query-list-example-spacedevs: ""
-  get-astronauts-query-list-example-iss: ""
-  get-astronauts-query-list-example-dump: ""
+  get-astronauts-query-list-example-all: "http://localhost:8083/api/exploration?astronauts=all"
+  get-astronauts-query-list-example-spacedevs: "http://localhost:8083/api/exploration?astronauts=spacedevs"
+  get-astronauts-query-list-example-iss: "http://localhost:8083/api/exploration?astronauts=iss"
+  get-astronauts-query-list-example-dump: "http://localhost:8083/api/exploration?dump=astronauts"
   
+  # GET 'iss' request & example
   get-international-space-station-query-list: "iss : raw, location"
-  get-international-space-station-query-list-example-raw: ""
-  get-international-space-station-query-list-example-location: ""
+  get-international-space-station-query-list-example-raw: "http://localhost:8083/api/exploration?iss=raw"
+  get-international-space-station-query-list-example-location: "http://localhost:8083/api/exploration?iss=location"
   
+  # POST 'create' request & example
   post-create-custom-collection: "create : collection name"
+  post-create-custom-collection-example: "http://localhost:8083/api/exploration?create=testCollection"
+  
+  # POST 'drop' request & example
   post-drop-custom-collection: "drop : collection name"
+  post-drop-custom-collection-example: "http://localhost:8083/api/exploration?drop=testCollection"
+  
+  # POST 'email', 'file' request & example
   post-send-data-from-the-ftp-to-the-email: "email : test@test.com & file : actual_all_astronauts, actual_iss_astronauts, actual_spacedevs_astronauts"
+  post-send-data-from-the-ftp-to-the-email-example-all: "http://localhost:8083/api/exploration?email=testmailaccount@merisen.online&file=actual_all_astronauts"
+  post-send-data-from-the-ftp-to-the-email-example-spacedevs: "http://localhost:8083/api/exploration?email=testmailaccount@merisen.online&file=actual_spacedevs_astronauts"
+  post-send-data-from-the-ftp-to-the-email-example-iss: "http://localhost:8083/api/exploration?email=testmailaccount@merisen.online&file=actual_iss_astronauts"
