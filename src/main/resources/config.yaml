@@ -22,6 +22,10 @@ astronauts-research-iss:
 expeditions:
   host: "http://localhost:8082/api/"
   
+# Java-Path validator
+java-path:
+  validation-dir: "/Volumes/Drive/AE-API/exploration/src/main/resources/api/research"
+  
 # Validation messages
 validation:
   collectionEmpty: "Collection of data empty, please retry!"
