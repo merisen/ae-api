@@ -44,9 +44,24 @@ output application/json
 	"Available query endpoints for /exploration in use Astronauts Research API":
 	{
 		"Get Help page": Mule::p('help.get-help-page-manual'),
+		"Example" : {
+			"Link": Mule::p('help.get-help-page-manual-example')
+		},
 		"Display number of requests": Mule::p('help.get-display-number-of-request'),
+		"Example" : {
+			"Link": Mule::p('help.get-display-number-of-requests-example')
+		},
 		"Get Astronauts": Mule::p('help.get-astronauts-query-list'),
-		"Get International Space Station": Mule::p('help.get-international-space-station-query-list')
+		"Example" : {
+			"Link - all astronauts": Mule::p('help.get-astronauts-query-list-example-all'),
+			"Link - SpaceDevs astronauts": Mule::p('help.get-astronauts-query-list-example-spacedevs'),
+			"Link - ISS astronauts": Mule::p('help.get-astronauts-query-list-example-iss'),
+			"Link - Dump astronauts collection": Mule::p('help.get-astronauts-query-list-example-dump'),
+		},
+		"Get International Space Station": Mule::p('help.get-international-space-station-query-list'),
+		"Example" : {
+			"Link": Mule::p('help.get-help-page-manual-example')
+		}
 	},
 	"Available query POST endpoints for /exploration in use Astronauts Research API":
 	{
