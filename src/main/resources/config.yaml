@@ -1,0 +1,57 @@
+# Main project connection
+connection:
+  host: "localhost"
+  port: "8083"
+  
+# SpaceDevs 'dev' host & ISS host
+host:
+  spacedevs: "https://lldev.thespacedevs.com/2.2.0/astronaut"
+  iss: "http://api.open-notify.org/iss-now.json"
+  iss-astronauts: "http://api.open-notify.org/astros.json"
+  
+# Astronaut Research Connector local-host configuration
+astronauts-research:
+  host: "http://localhost:8081/api/astronauts"
+  iss-host: "http://api.open-notify.org/astros.json"
+  
+# Astronaut Research only for ISS Connector local-host configuration
+astronauts-research-iss:
+  host: "http://localhost:8081/api/iss"
+
+# Expedition Connector local-host configuration
+expeditions:
+  host: "http://localhost:8082/api/"
+  
+# Validation messages
+validation:
+  collectionEmpty: "Collection of data empty, please retry!"
+  contactAdmin: "An error occured! Please contact administrator!"
+  dumpSuccess: "Dump success! Check out dump path in config.yaml."
+  dumpFailed: "Dump failed! Please try again."
+  createCollectionFailed: "Failed to create collection! Please type collection name or contact developers."
+  createCollectionSuccess: "Collection created successful!"
+  dropDatabaseSuccess: "Database 'astronauts' deleted successful!"
+  dropAstronautsCollectionSuccess: "Collection 'astronauts' deleted successful!"
+  dropCollectionSuccess: "Collection was dropped successfully!"
+
+# HTTP Status for error handlers
+httpStatus:
+  notFound: "404"
+  
+# Success operations
+success:
+  create-custom-collection-message: "Success!"
+  delete-astronauts-database-message: "Success!"
+  delete-astronauts-collection-message: "Success!"
+  delete-custom-collection-message: "Success!"
+  send-astronauts-all-to-the-user-email: "Success!"
+  send-spacedevs-astronauts-to-the-user-email: "Success!"
+  send-iss-astronauts-to-the-user-email: "Success!"
+  mongodb-astronauts-collection-dump: "Success!"
+
+# Failture operations
+
+# Log messages
+log:
+  detailed-mode-in-use: "Detailed mode: use"
+  mode-query-is-not-null: "Mode query != null"
