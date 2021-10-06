@@ -71,4 +71,10 @@ people: payload.people map ( person , indexOfPerson ) -> {
 		<flow-ref doc:name="path-validation" doc:id="a844655d-2977-45dd-ad88-d4940f476ddc" name="path-validation"/>
 		<flow-ref doc:name="files-validation" doc:id="ac552146-256a-47b6-9a79-386e979563d3" name="files-validation"/>
 	</sub-flow>
+	<sub-flow name="iss-station" doc:id="8c8cae29-f82e-489d-ba13-5e8ab49f29b6" >
+		<flow-ref doc:name="log-at-start" doc:id="13e346cd-7cfe-4a53-a996-6c17501fc811" name="log-at-start"/>
+	</sub-flow>
+	<sub-flow name="iss-station-full-raw-information" doc:id="dde0640e-19dd-45e8-a392-8bf963ab1cb4" >
+		<flow-ref doc:name="log-at-start" doc:id="9a3aa162-8d33-4af6-83ac-124b6e2dc3b3" name="log-at-start"/>
+	</sub-flow>
 </mule>
