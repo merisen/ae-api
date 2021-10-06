@@ -60,18 +60,28 @@
 					<coverage>
 						<runCoverage>true</runCoverage>
 						<failBuild>false</failBuild>
-						<requiredApplicationCoverage>0</requiredApplicationCoverage> 
+						<requiredApplicationCoverage>0</requiredApplicationCoverage>
 						<requiredResourceCoverage>0</requiredResourceCoverage>
 						<requiredFlowCoverage>0</requiredFlowCoverage>
-						<ignoreFiles> 
-       						<ignoreFile>interface.xml</ignoreFile> 
-      					</ignoreFiles> 
+						<ignoreFiles>
+							<ignoreFile>interface.xml</ignoreFile>
+						</ignoreFiles>
 						<formats>
 							<format>console</format>
 							<format>html</format>
 						</formats>
 					</coverage>
-					<runtimeVersion>4.3.0-20210622</runtimeVersion> 
+					<runtimeVersion>4.3.0-20210622</runtimeVersion>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<compilerArgs>
+						<args>-parameters</args>
+					</compilerArgs>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -150,6 +160,12 @@
 			<version>2.3.4</version>
 			<classifier>mule-plugin</classifier>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.module</groupId>
+			<artifactId>mule-java-module</artifactId>
+			<version>1.2.8</version>
+			<classifier>mule-plugin</classifier>
 		</dependency>
 	</dependencies>
 

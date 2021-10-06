@@ -585,6 +585,9 @@ type auto_593ea95c_4f18_49ce_aab2_f04162823c91_Output_Variables_limit = Null
 
 ]]></types:shape>
     </types:type>
+    <types:type name="java-file-and-path-validator" format="java">
+      <types:shape format="java" element="online.merisen.api.FileAndPathValidator"/>
+    </types:type>
   </types:catalog>
   <types:enrichment select="#05a1da36-ab69-4596-ba67-ff0c3862932f">
     <types:processor-declaration>

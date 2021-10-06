@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
 	<sub-flow name="spacedevs-request" doc:id="82015531-5a59-4a56-b0da-7b20995eb52e" >
 		<flow-ref doc:name="log-at-start" doc:id="394346d6-8884-45ec-b522-bb39db5b614a" name="log-at-start"/>
 		<flow-ref doc:name="limit-offset-mode-vars" doc:id="e42c443b-17e0-4611-8f86-f27ceaa63ba4" name="limit-offset-mode-vars"/>
@@ -62,20 +63,12 @@ people: payload.people map ( person , indexOfPerson ) -> {
 	</sub-flow>
 	<sub-flow name="path-validation" doc:id="0f29eaf1-b548-41dc-a7cb-f4fea8f8d069" >
 		<flow-ref doc:name="log-at-start" doc:id="581d8fd4-fc0b-4871-998a-d4ef498e1c60" name="log-at-start"/>
-		<ee:transform doc:name="path-java-validator" doc:id="187cbb16-66d1-4173-b8f5-faee92f7d322" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
-import java!online::merisen::api::FileAndPathValidator
-
-var validatePath = FileAndPathValidator::validatePath(Mule::p('java-path.validation-dir'))
----
-{
-	validate: validatePath
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
 	</sub-flow>
-	<sub-flow name="files-validation" doc:id="73139251-8015-40c6-9f91-9bcea7fd4622" />
-	<sub-flow name="files-and-path-validation-combined" doc:id="fa8a9a61-f6ae-4de7-9712-515f453ec0a1" />
+	<sub-flow name="files-validation" doc:id="73139251-8015-40c6-9f91-9bcea7fd4622" >
+		<flow-ref doc:name="log-at-start" doc:id="bbbae966-fb53-4644-b3f1-5aa89bea2e54" name="log-at-start"/>
+	</sub-flow>
+	<sub-flow name="files-and-path-validation-combined" doc:id="fa8a9a61-f6ae-4de7-9712-515f453ec0a1" >
+		<flow-ref doc:name="path-validation" doc:id="a844655d-2977-45dd-ad88-d4940f476ddc" name="path-validation"/>
+		<flow-ref doc:name="files-validation" doc:id="ac552146-256a-47b6-9a79-386e979563d3" name="files-validation"/>
+	</sub-flow>
 </mule>
