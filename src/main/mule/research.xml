@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:java="http://www.mulesoft.org/schema/mule/java"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<sub-flow name="spacedevs-request" doc:id="82015531-5a59-4a56-b0da-7b20995eb52e" >
 		<flow-ref doc:name="log-at-start" doc:id="394346d6-8884-45ec-b522-bb39db5b614a" name="log-at-start"/>
 		<flow-ref doc:name="limit-offset-mode-vars" doc:id="e42c443b-17e0-4611-8f86-f27ceaa63ba4" name="limit-offset-mode-vars"/>
@@ -76,5 +77,50 @@ people: payload.people map ( person , indexOfPerson ) -> {
 	</sub-flow>
 	<sub-flow name="iss-station-full-raw-information" doc:id="dde0640e-19dd-45e8-a392-8bf963ab1cb4" >
 		<flow-ref doc:name="log-at-start" doc:id="9a3aa162-8d33-4af6-83ac-124b6e2dc3b3" name="log-at-start"/>
+		<http:request method="GET" doc:name="iss-now-request" doc:id="bb809de6-348c-43d5-b887-7bd1988c419b" url="${host.iss}"/>
+		<ee:transform doc:name="transform-iss-position" doc:id="ae262515-0702-463a-bc32-a84f51d50b69" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+iss_position: {
+	latitude: payload.iss_position.latitude,
+	longitude: payload.iss_position.longitude
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-variable value='#["https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyDRevuLcdraF0xTfrRxg7d063CxyXR4ew8" &#10;++ "&amp;latlng=" &#10;++ (payload.iss_position.latitude as String)&#10;++ ","&#10;++ (payload.iss_position.longitude as String)]' doc:name="location-combined-to-the-google" doc:id="dd0fb562-89bf-4c9a-b0ba-27cee39d1e4f" variableName="url"/>
+		<validation:is-not-null doc:name="output-url-is-not-null" doc:id="863b4111-12e1-41d8-83c1-9f20586bb854" value="#[vars.url != null]"/>
+		<http:request method="GET" doc:name="google-url-request" doc:id="30fc4faa-0622-4a3e-b9a5-1b4ea71d486e" url="#[vars.url]"/>
+		<ee:transform doc:name="transform-request-output" doc:id="1212b0ee-3195-4b48-bede-7203d15010dd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	results: payload.results map ( result , indexOfResult ) -> {
+		address_components: result.address_components map ( addresscomponent , indexOfAddresscomponent ) -> {
+			long_name: addresscomponent.long_name,
+			short_name: addresscomponent.short_name,
+			types: addresscomponent.types map ( vtype , indexOfVtype ) -> vtype
+		},
+		formatted_address: result.formatted_address,
+		geometry: {
+			location: {
+				lat: result.geometry.location.lat,
+				lng: result.geometry.location.lng
+			},
+			location_type: result.geometry.location_type
+		},
+		plus_code: {
+			compound_code: result.plus_code.compound_code,
+			global_code: result.plus_code.global_code
+		}
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<validation:is-empty-collection doc:name="Is empty collection" doc:id="21585153-acfe-476f-88bc-b852d52bee20" message="${validation.collectionEmpty}"/>
+		<flow-ref doc:name="log-at-exit" doc:id="c3860406-4fd9-42a0-9d85-e465dce1f911" name="log-at-exit"/>
 	</sub-flow>
 </mule>
