@@ -22,10 +22,10 @@ help:
   get-astronauts-query-list-example-iss: "http://localhost:8083/api/exploration?astronauts=iss"
   get-astronauts-query-list-example-dump: "http://localhost:8083/api/exploration?dump=astronauts"
   
-  # GET 'iss' request & example
-  get-international-space-station-query-list: "iss : raw, location"
-  get-international-space-station-query-list-example-raw: "http://localhost:8083/api/exploration?iss=raw"
-  get-international-space-station-query-list-example-location: "http://localhost:8083/api/exploration?iss=location"
+  # GET 'station' request & example
+  get-international-space-station-query-list: "station : raw, link"
+  get-international-space-station-query-list-example-raw: "http://localhost:8083/api/exploration?station=raw"
+  get-international-space-station-query-list-example-location: "http://localhost:8083/api/exploration?station=link"
   
   # POST 'create' request & example
   post-create-custom-collection: "create : collection name"

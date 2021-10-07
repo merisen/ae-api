@@ -432,6 +432,9 @@ people: payload.people map ( person , indexOfPerson ) -> {
 			<when expression='#[vars.dump_request == "astronauts"]'>
 				<flow-ref doc:name="dump-collection-from-mongodb" doc:id="31a1e978-7ac1-4ac3-b372-95e4850961d5" name="dump-collection-from-mongodb"/>
 			</when>
+			<when expression="#[vars.station != null]">
+				<flow-ref doc:name="iss-station-flows" doc:id="6f959952-91e9-4479-b92f-a4194a63465c" name="iss-station"/>
+			</when>
 			<otherwise >
 				<flow-ref doc:name="info-help-output" doc:id="cb1b24bc-4f70-48a3-b29c-0f6380109a50" name="help-var"/>
 			</otherwise>

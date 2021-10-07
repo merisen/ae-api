@@ -12,7 +12,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 		<flow-ref doc:name="log-at-start" doc:id="6e56d153-0407-4535-9879-a0f91db3c9c2" name="log-at-start"/>
 		<flow-ref doc:name="exploration-vars" doc:id="85281843-e7a8-4f68-a506-8360db880c71" name="exploration-vars" />
 		<choice doc:name="Choice" doc:id="635f36ba-02bb-4714-aa10-5d3ab2bc305d" >
-			<when expression='#[vars.help != null or &#10;vars.astronauts != null or &#10;vars.data_count != null or&#10;vars.iss != null]'>
+			<when expression='#[vars.help != null or &#10;vars.astronauts != null or &#10;vars.data_count != null or&#10;vars.iss != null or&#10;vars.station != null]'>
 				<flow-ref doc:name="astronauts-exploration" doc:id="82c7d5a2-7880-4be5-afac-dcf709914447" name="astronauts-exploration" />
 			</when>
 			<otherwise>
