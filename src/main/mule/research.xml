@@ -136,7 +136,7 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<validation:is-empty-collection doc:name="Is empty collection" doc:id="21585153-acfe-476f-88bc-b852d52bee20" message="${validation.collectionEmpty}"/>
+		<validation:is-not-null doc:name="payload-is-not-null" doc:id="f7d25f56-2fbe-4867-820b-8fc385e9aef4" value="#[payload]" message="${validation.collectionEmpty}"/>
 		<flow-ref doc:name="log-at-exit" doc:id="c3860406-4fd9-42a0-9d85-e465dce1f911" name="log-at-exit"/>
 	</sub-flow>
 	<sub-flow name="iss-station-google-maps-link" doc:id="9093a37a-2315-405a-835c-f214b90d0462" >
