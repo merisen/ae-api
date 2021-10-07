@@ -74,6 +74,22 @@ people: payload.people map ( person , indexOfPerson ) -> {
 	</sub-flow>
 	<sub-flow name="iss-station" doc:id="8c8cae29-f82e-489d-ba13-5e8ab49f29b6" >
 		<flow-ref doc:name="log-at-start" doc:id="13e346cd-7cfe-4a53-a996-6c17501fc811" name="log-at-start"/>
+		<flow-ref doc:name="init-exploration-vars" doc:id="b0fc49ea-7157-47b7-a1e0-7d568dbc9f06" name="exploration-vars"/>
+		<choice doc:name="Choice" doc:id="da7561e7-7fb5-4bb5-ae15-e72de3a4b3db" >
+			<when expression='#[vars.station == "raw"]'>
+				<flow-ref doc:name="iss-station-full-raw-information" doc:id="986a0134-a529-41c2-8b7c-337dbeae1955" name="iss-station-full-raw-information"/>
+			</when>
+			<when expression='#[vars.station == "link"]'>
+				<flow-ref doc:name="iss-station-google-maps-link" doc:id="c3dcbe97-3484-4174-ac34-6fa127ca3084" name="iss-station-google-maps-link"/>
+			</when>
+			<when expression='#[vars.help == "info"]'>
+				<flow-ref doc:name="help-message" doc:id="5791fc99-29a3-4c69-9974-d1d19bc39362" name="help-var"/>
+			</when>
+			<otherwise >
+				<flow-ref doc:name="default-help-message" doc:id="ff1db1b6-4522-454d-9afd-90016f8f67ed" name="help-var"/>
+			</otherwise>
+		</choice>
+		<flow-ref doc:name="log-at-exit" doc:id="6919b952-9104-4cb5-a7b7-54075314b958" name="log-at-exit"/>
 	</sub-flow>
 	<sub-flow name="iss-station-full-raw-information" doc:id="dde0640e-19dd-45e8-a392-8bf963ab1cb4" >
 		<flow-ref doc:name="log-at-start" doc:id="9a3aa162-8d33-4af6-83ac-124b6e2dc3b3" name="log-at-start"/>
@@ -122,5 +138,24 @@ output application/json
 		</ee:transform>
 		<validation:is-empty-collection doc:name="Is empty collection" doc:id="21585153-acfe-476f-88bc-b852d52bee20" message="${validation.collectionEmpty}"/>
 		<flow-ref doc:name="log-at-exit" doc:id="c3860406-4fd9-42a0-9d85-e465dce1f911" name="log-at-exit"/>
+	</sub-flow>
+	<sub-flow name="iss-station-google-maps-link" doc:id="9093a37a-2315-405a-835c-f214b90d0462" >
+		<flow-ref doc:name="log-at-start" doc:id="39628d69-719b-434a-9244-ced49a251899" name="log-at-start"/>
+		<http:request method="GET" doc:name="iss-now-request" doc:id="f3ef3e99-48a9-4bd1-88fa-1c05a4decef0" url="${host.iss}"/>
+		<ee:transform doc:name="transform-output-to-the-google-maps-link" doc:id="5630cb80-65b9-4d05-ab48-6cffbe8e6999" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var googleApiLink = "https://www.google.com/maps/search/?api=1&query="
+var latitude = (payload.iss_position.latitude as String)
+var longitude = (payload.iss_position.longitude as String)
+
+var completedLink = googleApiLink ++ latitude ++ "," ++ longitude
+---
+completedLink]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<validation:is-not-null doc:name="is-not-null-payload" doc:id="5b14e4e3-d855-4c20-af6f-e41be19bb0ee" value="#[payload]"/>
+		<flow-ref doc:name="log-at-exit" doc:id="4a1ee8a8-34b9-4132-a797-85660dbb149e" name="log-at-exit"/>
 	</sub-flow>
 </mule>
