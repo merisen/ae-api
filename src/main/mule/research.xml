@@ -69,6 +69,11 @@ else
 				</ee:transform>
 				<flow-ref doc:name="log-at-exit" doc:id="ae44437b-2b37-4566-a651-9cf87a9ced5e" name="log-at-exit"/>
 			</when>
+			<when expression='#[vars.astronauts == "spacedevs"]'>
+				<flow-ref doc:name="log-at-start" doc:id="d539c42c-27ee-4935-89a3-b455f9036c50" name="log-at-start"/>
+				<flow-ref doc:name="spacedevs-request" doc:id="b09eb88f-8fb6-4499-89ad-0e730bbc9c40" name="spacedevs-request"/>
+				<flow-ref doc:name="log-at-exit" doc:id="c1566d02-2296-45d5-9da7-964e3f9d4b62" name="log-at-exit"/>
+			</when>
 			<otherwise >
 				<flow-ref doc:name="help-var-output-request" doc:id="e650ab2a-7f79-41c2-919e-5571b1f9cae2" name="help-var"/>
 			</otherwise>
