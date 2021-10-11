@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_01777728_8b9a_484e_bc33_e255c556548f_Output_Variables_output_type = Null
+

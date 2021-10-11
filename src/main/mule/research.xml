@@ -47,6 +47,34 @@ output application/json
 		</choice>
 		<flow-ref doc:name="log-at-exit" doc:id="4b1dcbb2-70d1-4312-92d6-de6c500e9a94" name="log-at-exit"/>
 	</sub-flow>
+	<sub-flow name="get-spacedevs-astronauts" doc:id="f7534d8a-1d1c-4b44-977a-b2ca2cd5cf3a" >
+		<flow-ref doc:name="log-at-start" doc:id="59e17431-cf8c-444b-a2a7-944afc31534a" name="log-at-start"/>
+		<flow-ref doc:name="help-variable-initialization" doc:id="18ba5364-d3ed-48cd-ab75-3a16462d3e7f" name="help-var"/>
+		<flow-ref doc:name="exploration-vars-init" doc:id="aa8a27e2-ad98-459f-bc33-a1fb47fd03af" name="exploration-vars"/>
+		<choice doc:name="Choice" doc:id="0090e42a-043e-4d4e-8d27-c74a5606d1a9" >
+			<when expression="#[vars.name != null or vars.nationality != null]">
+				<flow-ref doc:name="log-at-start" doc:id="e5bb12ea-b11a-4c32-a6cb-e3feebacd938" name="log-at-start"/>
+				<ee:transform doc:name="filter-by-name-and-by-nationality" doc:id="ca9c5a5d-6124-4a85-8628-005e10f05a5a" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+if (vars.name != null and vars.nationality == null)
+	payload.results filter ((item, index) -> item."name" contains(vars.name))
+else if (vars.name == null and vars.nationality != null)
+	payload.results filter ((item, index) -> item."nationality" contains(vars.nationality))
+else
+	vars.help_var]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<flow-ref doc:name="log-at-exit" doc:id="ae44437b-2b37-4566-a651-9cf87a9ced5e" name="log-at-exit"/>
+			</when>
+			<otherwise >
+				<flow-ref doc:name="help-var-output-request" doc:id="e650ab2a-7f79-41c2-919e-5571b1f9cae2" name="help-var"/>
+			</otherwise>
+		</choice>
+		<flow-ref doc:name="log-at-exit" doc:id="6976d800-d947-4199-847c-f6a92e99b4d3" name="log-at-exit"/>
+	</sub-flow>
 	<sub-flow name="international-space-station-request" doc:id="86690d4d-012f-4758-9584-d20c09540279" >
 		<flow-ref doc:name="log-at-start" doc:id="70f907a1-f288-4417-933f-cb46f3a83511" name="log-at-start"/>
 		<http:request method="GET" doc:name="international-space-station" doc:id="2ea9ca46-720e-4ee4-872a-3fb67d53045f" url="${host.iss-astronauts}"/>
