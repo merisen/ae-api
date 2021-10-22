@@ -38,3 +38,4 @@ src/main/resources/.DS_Store
 
 # MacOS Files
 *.DS_Store
+._.gitignore
